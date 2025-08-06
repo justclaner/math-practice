@@ -29,7 +29,10 @@ const Multiplication = () => {
     const [minFactor2, setMinFactor2] = useState(0);
     const [maxFactor2, setMaxFactor2] = useState(10);
 
+    const [started, setStarted] = useState(false);
+
     useEffect(() => {
+        setStarted(true);
         newQuestion();
     }, []);
 
@@ -98,6 +101,9 @@ const Multiplication = () => {
     }, [difficulty])
 
     useEffect(() => {
+        if (started) {
+            setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`)
+        }
         setCorrect(0);
         setMaxStreak(0);
         setTotalCorrect(0);
@@ -194,17 +200,17 @@ const Multiplication = () => {
         <div className="text-3xl text-center">Multiplication Practice</div>
         <div className="flex flex-row gap-3">
             <div className="text-xl">Difficulty: </div>
-            <select name="" id="" className="border-2 border-black px-2 py-1 rounded-md"
+            <select name="" id="" className="border-2 border-black px-2 pb-1 pt-0.5 rounded-md"
             onChange={(e) => {
                 setDifficulty(Number(e.target.value));
             }}
             >
-                <option value={1}>1) Times Table</option>
-                <option value={2}>2) 2-digit by 1-digit</option>
-                <option value={3}>3) 2-digit by 2-digit</option>
-                <option value={4}>4) 3-digit by 2-digit</option>
-                <option value={5}>5) 3-digit by 3-digit</option>
-                <option value={6}>6) 4-digit by 4-digit</option>
+                <option value={1}>Level 1: Times Tables</option>
+                <option value={2}>Level 2: 2-digit by 1-digit</option>
+                <option value={3}>Level 3: 2-digit by 2-digit</option>
+                <option value={4}>Level 4: 3-digit by 2-digit</option>
+                <option value={5}>Level 5: 3-digit by 3-digit</option>
+                <option value={6}>Level 6: 4-digit by 4-digit</option>
             </select>
         </div>
         <div className="text-center text-3xl">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
+import { letterGrade } from "../logic";
 
 const Multiplication = () => {
     const [factor1, setFactor1] = useState(0);
@@ -13,6 +14,8 @@ const Multiplication = () => {
     const [stopwatch, setStopwatch] = useState(0);
     const [startTime, setStartTime] = useState((new Date()).getTime());
     const [timeoutAnswer, setTimeoutAnswer] = useState(null)
+    const [totalQuestions, setTotalQuestions] = useState(0);
+    const [totalCorrect, setTotalCorrect] = useState(0);
 
     const [maxStreak, setMaxStreak] = useState(0);
 
@@ -59,6 +62,7 @@ const Multiplication = () => {
         setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`)
         setAnswer("");
         setCorrect(0);
+        setTotalQuestions(totalQuestions + 1);
         setIncorrect(incorrect + 1);
         setFeedback("Ran out of time!");
         newQuestion();
@@ -77,8 +81,10 @@ const Multiplication = () => {
     };
 
     const answerQuestion = () => {
+        setTotalQuestions(totalQuestions + 1);
         if (answer == product && answer != "") {
             setCorrect(correct + 1);
+            setTotalCorrect(totalCorrect + 1);
             setIncorrect(0);
             setFeedback("");
             newQuestion();
@@ -120,7 +126,16 @@ const Multiplication = () => {
         </div>
         <div className="text-3xl">{`${Math.max(((5000 - stopwatch) / 1000).toFixed(1), 0)}s`}</div>
         <div className="text-xl">{`Correct Streak: ${correct}`}</div>
-        <div className="text-xl">{`Max Streak: ${maxStreak}`}</div>
+        <div className="flex flex-row items-center gap-5">
+            <div className="text-xl">{`Max Streak: ${maxStreak}`}</div>
+            {totalQuestions > 0 && 
+            <div className="text-xl">{`
+                ${totalCorrect}/${totalQuestions} 
+                (${(100 * totalCorrect / totalQuestions).toFixed(2)}%)
+                  ${letterGrade(totalCorrect / totalQuestions)}
+                `}</div>
+            }
+        </div>
         {incorrect > 0 && <div className="text-xl text-red-500">{`Incorrect Streak: ${incorrect}`}</div>}
         {feedback && <div className="text-xl text-red-500">{feedback}</div>}
         {timeoutAnswer && <div className="text-6xl text-red-700"><InlineMath math={timeoutAnswer}/></div>}

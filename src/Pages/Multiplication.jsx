@@ -12,6 +12,7 @@ const Multiplication = () => {
     const [feedback, setFeedback] = useState("");
     const [stopwatch, setStopwatch] = useState(0);
     const [startTime, setStartTime] = useState((new Date()).getTime());
+    const [timeoutAnswer, setTimeoutAnswer] = useState(null)
 
     const [maxStreak, setMaxStreak] = useState(0);
 
@@ -55,6 +56,7 @@ const Multiplication = () => {
 
     const outOfTime = () => {
         console.log("timer ended");
+        setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`)
         setAnswer("");
         setCorrect(0);
         setIncorrect(incorrect + 1);
@@ -121,6 +123,7 @@ const Multiplication = () => {
         <div className="text-xl">{`Max Streak: ${maxStreak}`}</div>
         {incorrect > 0 && <div className="text-xl text-red-500">{`Incorrect Streak: ${incorrect}`}</div>}
         {feedback && <div className="text-xl text-red-500">{feedback}</div>}
+        {timeoutAnswer && <div className="text-6xl text-red-700"><InlineMath math={timeoutAnswer}/></div>}
         </div>
     );
 }

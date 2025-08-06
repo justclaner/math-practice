@@ -13,6 +13,8 @@ const Multiplication = () => {
     const [stopwatch, setStopwatch] = useState(0);
     const [startTime, setStartTime] = useState((new Date()).getTime());
 
+    const [maxStreak, setMaxStreak] = useState(0);
+
     const millisecondsForEachQuestion = 5000;
 
     useEffect(() => {
@@ -22,6 +24,10 @@ const Multiplication = () => {
     const getStartTime = () => {
         return startTime;
     }
+
+    useEffect(() => {
+        setMaxStreak(Math.max(maxStreak, correct));
+    }, [correct])
 
     useEffect(() => {
         //console.log(stopwatch);
@@ -102,6 +108,7 @@ const Multiplication = () => {
         />
         <div className="text-3xl">{`${Math.max(((5000 - stopwatch) / 1000).toFixed(1), 0)}s`}</div>
         <div className="text-xl">{`Correct Streak: ${correct}`}</div>
+        <div className="text-xl">{`Max Streak: ${maxStreak}`}</div>
         {incorrect > 0 && <div className="text-xl text-red-500">{`Incorrect Streak: ${incorrect}`}</div>}
         {feedback && <div className="text-xl text-red-500">{feedback}</div>}
         </div>

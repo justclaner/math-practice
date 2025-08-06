@@ -228,12 +228,13 @@ const Multiplication = () => {
         </div>
         <div className="flex flex-row items-center gap-2">
             <input
-                type="text"
+                type="number"
                 value={answer}
                 onChange={(e) => {
                 setAnswer(e.target.value);
                 }}
-                className="text-3xl border-2 border-black px-2 py-1 w-[100px] rounded-xl"
+                className="text-3xl border-2 border-black px-2 py-1 rounded-xl"
+                style={{width:`${100 + difficulty * 25}px`}}
             />
             <button className="border-2 border-black px-2 py-1 text-3xl rounded-xl 
             select-none hover:bg-neutral-400 active:bg-neutral-300 duration-100" onClick={() => {

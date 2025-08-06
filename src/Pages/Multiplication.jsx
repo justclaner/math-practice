@@ -74,23 +74,27 @@ const Multiplication = () => {
         setProduct(a * b);
     };
 
+    const answerQuestion = () => {
+        if (answer == product && answer != "") {
+            setCorrect(correct + 1);
+            setIncorrect(0);
+            setFeedback("");
+            newQuestion();
+        } else {
+            setAnswer("");
+            setIncorrect(incorrect + 1);
+            setFeedback("INCORRECT");
+            setCorrect(0);
+        }
+    }
+
     return (
         <div
         className="mt-2 flex flex-col gap-2 items-center"
         tabIndex={0}
         onKeyDown={(e) => {
             if (e.key == "Enter") {
-            if (answer == product) {
-                setCorrect(correct + 1);
-                setIncorrect(0);
-                setFeedback("");
-                newQuestion();
-            } else {
-                setAnswer("");
-                setIncorrect(incorrect + 1);
-                setFeedback("INCORRECT");
-                setCorrect(0);
-            }
+                answerQuestion();
             }
         }}
         >
@@ -98,14 +102,20 @@ const Multiplication = () => {
         <div className="text-center text-3xl">
             <InlineMath math={`${factor1}\\cdot${factor2}`}></InlineMath>
         </div>
-        <input
-            type="text"
-            value={answer}
-            onChange={(e) => {
-            setAnswer(e.target.value);
-            }}
-            className="text-3xl border-2 border-black px-2 py-1"
-        />
+        <div className="flex flex-row items-center gap-2">
+            <input
+                type="text"
+                value={answer}
+                onChange={(e) => {
+                setAnswer(e.target.value);
+                }}
+                className="text-3xl border-2 border-black px-2 py-1 w-[100px] rounded-xl"
+            />
+            <button className="border-2 border-black px-2 py-1 text-3xl rounded-xl 
+            select-none hover:bg-neutral-400 active:bg-neutral-300 duration-100" onClick={() => {
+                answerQuestion();
+            }}>Enter</button>
+        </div>
         <div className="text-3xl">{`${Math.max(((5000 - stopwatch) / 1000).toFixed(1), 0)}s`}</div>
         <div className="text-xl">{`Correct Streak: ${correct}`}</div>
         <div className="text-xl">{`Max Streak: ${maxStreak}`}</div>

@@ -97,6 +97,15 @@ const Multiplication = () => {
                 setMinFactor2(1000);
                 setMaxFactor2(9999);
                 break;
+            case 7:
+                setSecondsPerQuestion(450);
+
+                setMinFactor1(100000000);
+                setMaxFactor1(999999999);
+
+                setMinFactor2(100000000);
+                setMaxFactor2(999999999);
+                break;
         }
     }, [difficulty])
 
@@ -211,6 +220,7 @@ const Multiplication = () => {
                 <option value={4}>Level 4: 3-digit by 2-digit</option>
                 <option value={5}>Level 5: 3-digit by 3-digit</option>
                 <option value={6}>Level 6: 4-digit by 4-digit</option>
+                <option value={7}>Level 7: 9-digit by 9-digit</option>
             </select>
         </div>
         <div className="text-center text-3xl">
@@ -244,7 +254,7 @@ const Multiplication = () => {
         </div>
         {incorrect > 0 && <div className="text-xl text-red-500">{`Incorrect Streak: ${incorrect}`}</div>}
         {feedback && <div className="text-xl text-red-500">{feedback}</div>}
-        {timeoutAnswer && <div className="text-6xl text-red-700"><InlineMath math={timeoutAnswer}/></div>}
+        {timeoutAnswer && <div className="text-red-700 text-center" style={{fontSize:`${difficulty < 7 ? 60 : 32}px`}}><InlineMath math={timeoutAnswer}/></div>}
         </div>
     );
 }

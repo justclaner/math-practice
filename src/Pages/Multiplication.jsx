@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
 import { letterGrade } from "../logic";
+
+import CorrectSound from "../assets/correct.mp3";
+import IncorrectSound from "../assets/incorrect.mp3";
 
 const Multiplication = () => {
   const [factor1, setFactor1] = useState(0);
@@ -31,10 +34,21 @@ const Multiplication = () => {
 
   const [started, setStarted] = useState(false);
 
+  const correctRef = useRef(null);
+  const incorrectRef = useRef(null);
+
+  const [isRandomOrder, setIsRandomOrder] = useState(true);
+
+  const [constant, setConstant] = useState(0);
+
   useEffect(() => {
     setStarted(true);
     newQuestion();
   }, []);
+
+  useEffect(() => {
+    console.log(isRandomOrder);
+  }, [isRandomOrder]);
 
   const getStartTime = () => {
     return startTime;
@@ -106,8 +120,11 @@ const Multiplication = () => {
         setMinFactor2(100000000);
         setMaxFactor2(999999999);
         break;
+      case 8:
+        setSecondsPerQuestion(10);
     }
-  }, [difficulty]);
+    newQuestion();
+  }, [difficulty, constant, isRandomOrder]);
 
   useEffect(() => {
     if (started) {
@@ -151,6 +168,10 @@ const Multiplication = () => {
   }, [factor1, factor2]);
 
   const outOfTime = () => {
+    if (incorrectRef.current) {
+      incorrectRef.current.currentTime = 0;
+      incorrectRef.current.play();
+    }
     console.log("timer ended");
     setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`);
     setAnswer("");
@@ -166,19 +187,29 @@ const Multiplication = () => {
     setStartTime(date.getTime());
 
     setAnswer("");
-    let a = Math.floor(
-      Math.random() * (maxFactor1 - minFactor1 + 1) + minFactor1
-    );
-    let b = Math.floor(
-      Math.random() * (maxFactor2 - minFactor2 + 1) + minFactor2
-    );
+    let a;
+    let b;
+    if (difficulty == 8) {
+      //3, 5, 6, 7, 8, 9
+      let arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      a = constant;
+      b = arr[Math.floor(Math.random() * arr.length)];
+    } else {
+      a = Math.floor(
+        Math.random() * (maxFactor1 - minFactor1 + 1) + minFactor1
+      );
+      b = Math.floor(
+        Math.random() * (maxFactor2 - minFactor2 + 1) + minFactor2
+      );
+    }
 
     //switch them randomly
-    if (Math.random() < 0.5) {
+    if (Math.random() < 0.5 && isRandomOrder) {
       a ^= b;
       b ^= a;
       a ^= b;
     }
+
     setFactor1(a);
     setFactor2(b);
     setProduct(a * b);
@@ -187,12 +218,20 @@ const Multiplication = () => {
   const answerQuestion = () => {
     setTotalQuestions(totalQuestions + 1);
     if (answer == product && answer != "") {
+      if (correctRef.current) {
+        correctRef.current.currentTime = 0;
+        correctRef.current.play();
+      }
       setCorrect(correct + 1);
       setTotalCorrect(totalCorrect + 1);
       setIncorrect(0);
       setFeedback("");
       newQuestion();
     } else {
+      if (incorrectRef.current) {
+        incorrectRef.current.currentTime = 0;
+        incorrectRef.current.play();
+      }
       setAnswer("");
       setIncorrect(incorrect + 1);
       setFeedback("INCORRECT");
@@ -228,7 +267,44 @@ const Multiplication = () => {
           <option value={5}>Level 5: 3-digit by 3-digit</option>
           <option value={6}>Level 6: 4-digit by 4-digit</option>
           <option value={7}>Level 7: 9-digit by 9-digit</option>
+          <option value={8}>Level 8: Custom</option>
         </select>
+        {difficulty == 8 && (
+          <select
+            name=""
+            id=""
+            className="border-2 border-black px-2 pb-1 pt-0.5 rounded-md"
+            onChange={(e) => {
+              setConstant(Number(e.target.value));
+            }}
+          >
+            <option value={0}>Practice 1's</option>
+            <option value={1}>Practice 1's</option>
+            <option value={2}>Practice 2's</option>
+            <option value={3}>Practice 3's</option>
+            <option value={4}>Practice 4's</option>
+            <option value={5}>Practice 5's</option>
+            <option value={6}>Practice 6's</option>
+            <option value={7}>Practice 7's</option>
+            <option value={8}>Practice 8's</option>
+            <option value={9}>Practice 9's</option>
+            <option value={10}>Practice 10's</option>
+          </select>
+        )}
+      </div>
+      <div className="flex flex-row gap-2">
+        <input
+          type="checkbox"
+          name=""
+          id=""
+          checked={isRandomOrder}
+          onChange={(e) => {
+            setIsRandomOrder(e.target.checked);
+          }}
+        />
+        <label htmlFor="" className="text-xl">
+          Switch Factors?
+        </label>
       </div>
       <div className="text-center text-3xl">
         <InlineMath math={`${factor1}\\cdot${factor2}`}></InlineMath>
@@ -280,6 +356,9 @@ const Multiplication = () => {
           <InlineMath math={timeoutAnswer} />
         </div>
       )}
+
+      <audio src={CorrectSound} ref={correctRef}></audio>
+      <audio src={IncorrectSound} ref={incorrectRef}></audio>
     </div>
   );
 };

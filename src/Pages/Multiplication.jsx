@@ -309,7 +309,7 @@ const Multiplication = () => {
           }}
         />
         <label htmlFor="" className="text-xl">
-          Switch Factors?
+          Random Factor Order?
         </label>
       </div>
       <div className="text-center text-3xl">

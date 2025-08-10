@@ -121,7 +121,7 @@ const Multiplication = () => {
         setMaxFactor2(999999999);
         break;
       case 8:
-        setSecondsPerQuestion(10);
+        setSecondsPerQuestion(5);
     }
     setCorrect(0);
     setTotalCorrect(0);

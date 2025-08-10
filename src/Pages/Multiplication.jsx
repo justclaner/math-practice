@@ -123,6 +123,11 @@ const Multiplication = () => {
       case 8:
         setSecondsPerQuestion(10);
     }
+    setCorrect(0);
+    setTotalCorrect(0);
+    setTotalQuestions(0);
+    setMaxStreak(0);
+    setIncorrect(0);
     newQuestion();
   }, [difficulty, constant, isRandomOrder]);
 
@@ -191,8 +196,9 @@ const Multiplication = () => {
     let b;
     if (difficulty == 8) {
       //3, 5, 6, 7, 8, 9
-      let arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      let arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
       a = constant;
+      //a = Math.random() < 0.5 ? 3 : 4;
       b = arr[Math.floor(Math.random() * arr.length)];
     } else {
       a = Math.floor(
@@ -278,7 +284,7 @@ const Multiplication = () => {
               setConstant(Number(e.target.value));
             }}
           >
-            <option value={0}>Practice 1's</option>
+            <option value={0}>Practice 0's</option>
             <option value={1}>Practice 1's</option>
             <option value={2}>Practice 2's</option>
             <option value={3}>Practice 3's</option>

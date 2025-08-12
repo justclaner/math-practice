@@ -58,7 +58,7 @@ const Multiplication = () => {
     console.log(difficulty);
     switch (difficulty) {
       case 1:
-        setSecondsPerQuestion(3);
+        setSecondsPerQuestion(5);
 
         setMinFactor1(0);
         setMaxFactor1(10);
@@ -121,7 +121,7 @@ const Multiplication = () => {
         setMaxFactor2(999999999);
         break;
       case 8:
-        setSecondsPerQuestion(3);
+        setSecondsPerQuestion(5);
     }
     setCorrect(0);
     setTotalCorrect(0);

@@ -128,6 +128,7 @@ const Multiplication = () => {
     setTotalQuestions(0);
     setMaxStreak(0);
     setIncorrect(0);
+    setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`);
     newQuestion();
   }, [difficulty, constant, isRandomOrder]);
 

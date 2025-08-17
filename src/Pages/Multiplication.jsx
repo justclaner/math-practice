@@ -133,9 +133,9 @@ const Multiplication = () => {
   }, [difficulty, constant, isRandomOrder]);
 
   useEffect(() => {
-    if (started) {
-      setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`);
-    }
+    // if (started) {
+    //   setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`);
+    // }
     setCorrect(0);
     setMaxStreak(0);
     setTotalCorrect(0);

@@ -67,7 +67,7 @@ const Multiplication = () => {
         setMaxFactor2(10);
         break;
       case 2:
-        setSecondsPerQuestion(15);
+        setSecondsPerQuestion(60);
 
         setMinFactor1(10);
         setMaxFactor1(99);
@@ -196,8 +196,10 @@ const Multiplication = () => {
     let b;
     if (difficulty == 8) {
       //3, 5, 6, 7, 8, 9
+      let arr1 = [3, 4, 5, 6];
       let arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
       a = constant;
+      //a = arr1[Math.floor(Math.random() * arr1.length)];
       //a = Math.random() < 0.5 ? 3 : 4;
       b = arr[Math.floor(Math.random() * arr.length)];
     } else {
@@ -312,7 +314,7 @@ const Multiplication = () => {
           Random Factor Order?
         </label>
       </div>
-      <div className="text-center text-3xl">
+      <div className="text-center text-6xl">
         <InlineMath math={`${factor1}\\cdot${factor2}`}></InlineMath>
       </div>
       <div className="flex flex-row items-center gap-2">

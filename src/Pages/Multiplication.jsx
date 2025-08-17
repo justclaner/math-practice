@@ -76,7 +76,16 @@ const Multiplication = () => {
         setMaxFactor2(10);
         break;
       case 3:
-        setSecondsPerQuestion(30);
+        setSecondsPerQuestion(80);
+
+        setMinFactor1(100);
+        setMaxFactor1(999);
+
+        setMinFactor2(0);
+        setMaxFactor2(10);
+        break;
+      case 4:
+        setSecondsPerQuestion(100);
 
         setMinFactor1(10);
         setMaxFactor1(99);
@@ -84,8 +93,8 @@ const Multiplication = () => {
         setMinFactor2(10);
         setMaxFactor2(99);
         break;
-      case 4:
-        setSecondsPerQuestion(45);
+      case 5:
+        setSecondsPerQuestion(80);
 
         setMinFactor1(100);
         setMaxFactor1(999);
@@ -93,7 +102,7 @@ const Multiplication = () => {
         setMinFactor2(10);
         setMaxFactor2(99);
         break;
-      case 5:
+      case 6:
         setSecondsPerQuestion(60);
 
         setMinFactor1(100);
@@ -102,7 +111,7 @@ const Multiplication = () => {
         setMinFactor2(100);
         setMaxFactor2(999);
         break;
-      case 6:
+      case 7:
         setSecondsPerQuestion(100);
 
         setMinFactor1(1000);
@@ -111,7 +120,7 @@ const Multiplication = () => {
         setMinFactor2(1000);
         setMaxFactor2(9999);
         break;
-      case 7:
+      case 8:
         setSecondsPerQuestion(450);
 
         setMinFactor1(100000000);
@@ -120,7 +129,7 @@ const Multiplication = () => {
         setMinFactor2(100000000);
         setMaxFactor2(999999999);
         break;
-      case 8:
+      case 9:
         setSecondsPerQuestion(5);
     }
     setCorrect(0);
@@ -195,7 +204,7 @@ const Multiplication = () => {
     setAnswer("");
     let a;
     let b;
-    if (difficulty == 8) {
+    if (difficulty == 9) {
       //3, 5, 6, 7, 8, 9
       let arr1 = [3, 4, 5, 6];
       let arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -271,14 +280,15 @@ const Multiplication = () => {
         >
           <option value={1}>Level 1: Times Tables</option>
           <option value={2}>Level 2: 2-digit by 1-digit</option>
-          <option value={3}>Level 3: 2-digit by 2-digit</option>
-          <option value={4}>Level 4: 3-digit by 2-digit</option>
-          <option value={5}>Level 5: 3-digit by 3-digit</option>
-          <option value={6}>Level 6: 4-digit by 4-digit</option>
-          <option value={7}>Level 7: 9-digit by 9-digit</option>
-          <option value={8}>Level 8: Custom</option>
+          <option value={3}>Level 3: 3-digit by 1-digit</option>
+          <option value={4}>Level 4: 2-digit by 2-digit</option>
+          <option value={5}>Level 5: 3-digit by 2-digit</option>
+          <option value={6}>Level 6: 3-digit by 3-digit</option>
+          <option value={7}>Level 7: 4-digit by 4-digit</option>
+          <option value={8}>Level 8: 9-digit by 9-digit</option>
+          <option value={9}>Level 9: Custom</option>
         </select>
-        {difficulty == 8 && (
+        {difficulty == 9 && (
           <select
             name=""
             id=""

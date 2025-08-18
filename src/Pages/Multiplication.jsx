@@ -237,7 +237,7 @@ const Multiplication = () => {
     setTotalQuestions(totalQuestions + 1);
     if (
       (answer == product ||
-        answer.replace(/\s+/g, " ").trim() ==
+        answer.replace(/\s+/g, " ").trim().toLowerCase() ==
           numToText(product).replace(/\s+/g, " ").trim()) &&
       answer != ""
     ) {
@@ -342,7 +342,9 @@ const Multiplication = () => {
             //setAnswer(e.target.value.replace(/\s+/g, " ").trim());
           }}
           className="text-3xl border-2 border-black px-2 py-1 rounded-xl"
-          style={{ width: `${100 + difficulty * 25}px` }}
+          style={{
+            width: difficulty == 9 ? `125px` : `${100 + difficulty * 25}px`,
+          }}
         />
         <button
           className="border-2 border-black px-2 py-1 text-3xl rounded-xl 

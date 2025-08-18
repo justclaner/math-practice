@@ -70,7 +70,9 @@ const tens = new Map([
 
 //supports up to 999,999,999,999
 export const numToText = (num) => {
+    console.log(num);
     if (num == 0) {
+        console.log("returning zero");
         return "zero";
     }
     const maxDigits = 12;

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
-import { letterGrade } from "../logic";
+import { letterGrade, numToText } from "../logic";
 
 import CorrectSound from "../assets/correct.mp3";
 import IncorrectSound from "../assets/incorrect.mp3";
@@ -235,7 +235,12 @@ const Multiplication = () => {
 
   const answerQuestion = () => {
     setTotalQuestions(totalQuestions + 1);
-    if (answer == product && answer != "") {
+    if (
+      (answer == product ||
+        answer.replace(/\s+/g, " ").trim() ==
+          numToText(product).replace(/\s+/g, " ").trim()) &&
+      answer != ""
+    ) {
       if (correctRef.current) {
         correctRef.current.currentTime = 0;
         correctRef.current.play();
@@ -330,10 +335,11 @@ const Multiplication = () => {
       </div>
       <div className="flex flex-row items-center gap-2">
         <input
-          type="number"
+          type="text"
           value={answer}
           onChange={(e) => {
-            setAnswer(e.target.value.replace(/\s+/g, " ").trim());
+            setAnswer(e.target.value);
+            //setAnswer(e.target.value.replace(/\s+/g, " ").trim());
           }}
           className="text-3xl border-2 border-black px-2 py-1 rounded-xl"
           style={{ width: `${100 + difficulty * 25}px` }}

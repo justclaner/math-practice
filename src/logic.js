@@ -29,3 +29,92 @@ export const letterGrade = (percent) => {
         return 'F (!!!!)'
     }
 }
+
+const singleDigits = new Map([
+    [0, 'zero'],
+    [1, 'one'],
+    [2, 'two'],
+    [3, 'three'],
+    [4, 'four'],
+    [5, 'five'],
+    [6, 'six'],
+    [7, 'seven'],
+    [8, 'eight'],
+    [9, 'nine']
+]);
+
+const teens = new Map([
+    [11, 'eleven'],
+    [12, 'twelve'],
+    [13, 'thirteen'],
+    [14, 'fourteen'],
+    [15, 'fifteen'],
+    [16, 'sixteen'],
+    [17, 'seventeen'],
+    [18, 'eighteen'],
+    [19, 'nineteen'],
+]);
+
+const tens = new Map([
+    [0, ''],
+    [10, 'ten'],
+    [20, 'twenty'],
+    [30, 'thirty'],
+    [40, 'forty'],
+    [50, 'fifty'],
+    [60, 'sixty'],
+    [70, 'seventy'],
+    [80, 'eighty'],
+    [90, 'ninety']
+])
+
+//supports up to 999,999,999,999
+export const numToText = (num) => {
+    if (num == 0) {
+        return "zero";
+    }
+    const maxDigits = 12;
+    let digits = new Array(maxDigits).fill(0);
+    for (let i = 0; i < digits.length; i++) {
+        digits[i] = Math.floor(num / Math.pow(10, maxDigits - i - 1)) % 10;
+    }
+    console.log(digits);
+    let text = "";
+    let groups = ['billion ', 'million ', 'thousand ', ''];
+
+    for (let j = 0; j < groups.length; j++) {
+        let index = 3 * j;
+        if ((digits[index] | digits[index + 1] | digits[index + 2]) == 0) {
+            continue;
+        }
+        if (digits[index] > 0) {
+            text += `${singleDigits.get(digits[index])} hundred `;
+        }
+
+        if (digits[index + 1] == 1) {
+            if (digits[index + 2] > 0) {
+                text += `${teens.get(10 * digits[index + 1] + digits[index + 2])} `;
+            } else {
+                text += `ten `;
+            }
+        } else {
+            if (digits[index + 1] > 1) {
+                text += `${tens.get(10 * digits[index + 1])} `;
+            }
+            if (digits[index + 2] > 0) {
+                text += `${singleDigits.get(digits[index + 2])} `;
+            }
+        }
+
+        //if either one is more than 0
+        if ((digits[index] | digits[index + 1] | digits[index + 2]) > 0) {
+            text += groups[j];
+        }
+    }
+
+    if (digits[0] > 0) {
+        text += `${singleDigits.get(digits[0])} hundred `;
+    }
+
+    return text.trim();
+}

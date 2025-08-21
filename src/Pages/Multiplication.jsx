@@ -58,7 +58,7 @@ const Multiplication = () => {
     console.log(difficulty);
     switch (difficulty) {
       case 1:
-        setSecondsPerQuestion(5);
+        setSecondsPerQuestion(3);
 
         setMinFactor1(0);
         setMaxFactor1(10);

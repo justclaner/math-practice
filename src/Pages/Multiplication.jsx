@@ -6,6 +6,8 @@ import { letterGrade, numToText } from "../logic";
 import CorrectSound from "../assets/correct.mp3";
 import IncorrectSound from "../assets/incorrect.mp3";
 
+import HomeButton from "../Components/HomeButton";
+
 const Multiplication = () => {
   const [factor1, setFactor1] = useState(0);
   const [factor2, setFactor2] = useState(0);
@@ -272,6 +274,7 @@ const Multiplication = () => {
         }
       }}
     >
+      <HomeButton />
       <div className="text-3xl text-center">Multiplication Practice</div>
       <div className="flex flex-row gap-3">
         <div className="text-xl">Difficulty: </div>

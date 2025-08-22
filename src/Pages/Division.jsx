@@ -6,6 +6,8 @@ import { letterGrade, numToText } from "../logic";
 import CorrectSound from "../assets/correct.mp3";
 import IncorrectSound from "../assets/incorrect.mp3";
 
+import HomeButton from "../Components/HomeButton";
+
 const Division = () => {
   const [dividend, setDividend] = useState(0);
   const [divisor, setDivisor] = useState(0);
@@ -221,6 +223,7 @@ const Division = () => {
         }
       }}
     >
+      <HomeButton />
       <div className="text-3xl text-center">Division Practice</div>
       <div className="flex flex-row gap-3">
         <div className="text-xl">Difficulty: </div>

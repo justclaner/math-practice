@@ -139,8 +139,11 @@ const Multiplication = () => {
     setTotalQuestions(0);
     setMaxStreak(0);
     setIncorrect(0);
-    setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`);
+    if (started) {
+      setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`);
+    }
     newQuestion();
+    setStarted(true);
   }, [difficulty, constant, isRandomOrder]);
 
   useEffect(() => {
@@ -378,7 +381,7 @@ const Multiplication = () => {
         <div className="text-xl text-red-500">{`Incorrect Streak: ${incorrect}`}</div>
       )}
       {feedback && <div className="text-xl text-red-500">{feedback}</div>}
-      {timeoutAnswer && incorrect > 0 && (
+      {timeoutAnswer && (
         <div
           className="text-red-700 text-center"
           style={{ fontSize: `${difficulty < 7 ? 60 : 32}px` }}

@@ -105,7 +105,10 @@ const Division = () => {
     setTotalQuestions(0);
     setMaxStreak(0);
     setIncorrect(0);
-    setTimeoutAnswer(`\\frac{${dividend}}{${divisor}}=${quotient}`);
+    if (started) {
+      setTimeoutAnswer(`\\frac{${dividend}}{${divisor}}=${quotient}`);
+    }
+    setStarted(true);
   }, [difficulty]);
 
   useEffect(() => {
@@ -119,7 +122,7 @@ const Division = () => {
     setFeedback("");
     setIncorrect(0);
     newQuestion();
-  }, [maxDividend, maxDivisor, minDividend, minDivisor, difficulty]);
+  }, [maxDividend, maxDivisor, minDividend, minDivisor]);
 
   useEffect(() => {
     setQuotient(dividend / divisor);

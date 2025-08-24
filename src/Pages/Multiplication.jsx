@@ -378,7 +378,7 @@ const Multiplication = () => {
         <div className="text-xl text-red-500">{`Incorrect Streak: ${incorrect}`}</div>
       )}
       {feedback && <div className="text-xl text-red-500">{feedback}</div>}
-      {timeoutAnswer && (
+      {timeoutAnswer && incorrect > 0 && (
         <div
           className="text-red-700 text-center"
           style={{ fontSize: `${difficulty < 7 ? 60 : 32}px` }}

@@ -105,7 +105,7 @@ const Multiplication = () => {
         setMaxFactor2(99);
         break;
       case 6:
-        setSecondsPerQuestion(60);
+        setSecondsPerQuestion(120);
 
         setMinFactor1(100);
         setMaxFactor1(999);

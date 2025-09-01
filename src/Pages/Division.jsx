@@ -91,7 +91,7 @@ const Division = () => {
         setMaxDivisor(100);
         break;
       case 7:
-        setSecondsPerQuestion(60);
+        setSecondsPerQuestion(80);
 
         setMinDividend(1000);
         setMaxDividend(100000);
@@ -190,7 +190,7 @@ const Division = () => {
   const answerQuestion = () => {
     setTotalQuestions(totalQuestions + 1);
     if (
-      (answer == quotient ||
+      (Number(answer) == quotient.toFixed(10) ||
         answer.replace(/\s+/g, " ").trim().toLowerCase() ==
           numToText(quotient).replace(/\s+/g, " ").trim()) &&
       answer != ""
@@ -252,7 +252,7 @@ const Division = () => {
           <option value={6}>
             Level 6: 5-digit divided by 2-digit (no remainder)
           </option>
-          <option value={7}>Level 6: Decimal Quotients</option>
+          <option value={7}>Level 7: Decimal Quotients</option>
         </select>
       </div>
       <div className="text-center text-6xl">

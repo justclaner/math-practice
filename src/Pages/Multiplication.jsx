@@ -24,7 +24,7 @@ const Multiplication = () => {
 
   const [maxStreak, setMaxStreak] = useState(0);
 
-  const [secondsPerQuestion, setSecondsPerQuestion] = useState(5);
+  const [secondsPerQuestion, setSecondsPerQuestion] = useState(3);
   const [currTimer, setCurrTimer] = useState(secondsPerQuestion);
 
   const [difficulty, setDifficulty] = useState(1);
@@ -402,9 +402,10 @@ const Multiplication = () => {
           <InlineMath math={timeoutAnswer} />
         </div>
       )}
-
+      {secondsPerQuestion > 0.01 && <div className="text-red-700 text-5xl">Something feels a bit off today...</div>}
+      
       {secondsPerQuestion <= 0 && <div>
-        <div className="text-3xl text-red-500">>:(</div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[128px] bold text-red-500">gg</div>
       </div> }
 
       <audio src={CorrectSound} ref={correctRef}></audio>

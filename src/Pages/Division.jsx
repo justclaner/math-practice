@@ -38,6 +38,20 @@ const Division = () => {
 
   const correctRef = useRef(null);
   const incorrectRef = useRef(null);
+  
+  useEffect(() => {
+    if (incorrect > 0) {
+      setSecondsPerQuestion(secondsPerQuestion - 0.2);
+    }
+  }, [incorrect])
+
+  useEffect(() => {
+    if (correct > 0) {
+      setSecondsPerQuestion(secondsPerQuestion + 0.0025);
+    }
+    setMaxStreak(Math.max(maxStreak, correct));
+  }, [correct])
+
   useEffect(() => {
     console.log(difficulty);
     switch (difficulty) {

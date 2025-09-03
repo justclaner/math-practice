@@ -24,7 +24,7 @@ const Division = () => {
 
   const [maxStreak, setMaxStreak] = useState(0);
 
-  const [secondsPerQuestion, setSecondsPerQuestion] = useState(5);
+  const [secondsPerQuestion, setSecondsPerQuestion] = useState(3);
   const [currTimer, setCurrTimer] = useState(secondsPerQuestion);
 
   const [difficulty, setDifficulty] = useState(1);
@@ -57,7 +57,7 @@ const Division = () => {
     console.log(difficulty);
     switch (difficulty) {
       case 1:
-        setSecondsPerQuestion(5);
+        setSecondsPerQuestion(3);
 
         break;
       case 2:

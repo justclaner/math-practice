@@ -51,7 +51,7 @@ const Multiplication = () => {
 
   useEffect(() => {
     if (incorrect > 0) {
-      setSecondsPerQuestion(secondsPerQuestion - 0.2);
+      setSecondsPerQuestion(secondsPerQuestion - 0.3);
     }
   }, [incorrect])
 

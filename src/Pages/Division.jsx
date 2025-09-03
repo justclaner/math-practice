@@ -25,6 +25,7 @@ const Division = () => {
   const [maxStreak, setMaxStreak] = useState(0);
 
   const [secondsPerQuestion, setSecondsPerQuestion] = useState(5);
+  const [currTimer, setCurrTimer] = useState(secondsPerQuestion);
 
   const [difficulty, setDifficulty] = useState(1);
 
@@ -38,7 +39,7 @@ const Division = () => {
 
   const correctRef = useRef(null);
   const incorrectRef = useRef(null);
-  
+
   useEffect(() => {
     if (incorrect > 0) {
       setSecondsPerQuestion(secondsPerQuestion - 0.2);
@@ -199,6 +200,8 @@ const Division = () => {
 
     setDividend(a);
     setDivisor(b);
+
+    setCurrTimer(secondsPerQuestion);
   };
 
   const answerQuestion = () => {
@@ -295,8 +298,9 @@ const Division = () => {
           Enter
         </button>
       </div>
+      {/* Timer */}
       <div className="text-3xl">{`${Math.max(
-        (secondsPerQuestion - stopwatch).toFixed(1),
+        (currTimer - stopwatch).toFixed(1),
         0
       )}s`}</div>
       <div className="text-xl">{`Correct Streak: ${correct}`}</div>

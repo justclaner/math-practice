@@ -25,6 +25,7 @@ const Multiplication = () => {
   const [maxStreak, setMaxStreak] = useState(0);
 
   const [secondsPerQuestion, setSecondsPerQuestion] = useState(5);
+  const [currTimer, setCurrTimer] = useState(secondsPerQuestion);
 
   const [difficulty, setDifficulty] = useState(1);
 
@@ -245,6 +246,8 @@ const Multiplication = () => {
     setFactor1(a);
     setFactor2(b);
     setProduct(a * b);
+
+    setCurrTimer(secondsPerQuestion);
   };
 
   const answerQuestion = () => {
@@ -371,8 +374,9 @@ const Multiplication = () => {
           Enter
         </button>
       </div>
+      {/* Timer */}
       <div className="text-3xl">{`${Math.max(
-        (secondsPerQuestion - stopwatch).toFixed(1),
+        (currTimer - stopwatch).toFixed(1),
         0
       )}s`}</div>
       <div className="text-xl">{`Correct Streak: ${correct}`}</div>

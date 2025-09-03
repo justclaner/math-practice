@@ -49,6 +49,17 @@ const Multiplication = () => {
   }, []);
 
   useEffect(() => {
+    if (incorrect > 0) {
+      setSecondsPerQuestion(secondsPerQuestion - 0.2);
+    }
+  }, [incorrect])
+
+  useEffect(() => {
+    setSecondsPerQuestion(secondsPerQuestion + 0.0025);
+    setMaxStreak(Math.max(maxStreak, correct));
+  }, [correct])
+
+  useEffect(() => {
     console.log(isRandomOrder);
   }, [isRandomOrder]);
 
@@ -60,7 +71,7 @@ const Multiplication = () => {
     console.log(difficulty);
     switch (difficulty) {
       case 1:
-        setSecondsPerQuestion(1);
+        setSecondsPerQuestion(3);
 
         setMinFactor1(0);
         setMaxFactor1(10);
@@ -158,10 +169,6 @@ const Multiplication = () => {
     setIncorrect(0);
     newQuestion();
   }, [maxFactor1, maxFactor2, minFactor1, minFactor2]);
-
-  useEffect(() => {
-    setMaxStreak(Math.max(maxStreak, correct));
-  }, [correct]);
 
   useEffect(() => {
     //console.log(stopwatch);

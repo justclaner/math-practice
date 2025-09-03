@@ -154,7 +154,7 @@ const Division = () => {
 
   useEffect(() => {
     //console.log(stopwatch);
-    if (stopwatch >= secondsPerQuestion) {
+    if (stopwatch >= currTimer) {
       outOfTime();
     }
   }, [stopwatch]);

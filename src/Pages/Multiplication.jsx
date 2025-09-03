@@ -175,7 +175,7 @@ const Multiplication = () => {
 
   useEffect(() => {
     //console.log(stopwatch);
-    if (stopwatch >= secondsPerQuestion) {
+    if (stopwatch >= currTimer) {
       outOfTime();
     }
   }, [stopwatch]);
@@ -402,6 +402,10 @@ const Multiplication = () => {
           <InlineMath math={timeoutAnswer} />
         </div>
       )}
+
+      {secondsPerQuestion <= 0 && <div>
+        <div className="text-3xl text-red-500">>:(</div>
+      </div> }
 
       <audio src={CorrectSound} ref={correctRef}></audio>
       <audio src={IncorrectSound} ref={incorrectRef}></audio>

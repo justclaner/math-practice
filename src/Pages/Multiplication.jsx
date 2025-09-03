@@ -60,7 +60,7 @@ const Multiplication = () => {
     console.log(difficulty);
     switch (difficulty) {
       case 1:
-        setSecondsPerQuestion(3);
+        setSecondsPerQuestion(1);
 
         setMinFactor1(0);
         setMaxFactor1(10);

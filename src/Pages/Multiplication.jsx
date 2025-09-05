@@ -44,6 +44,8 @@ const Multiplication = () => {
 
   const [constant, setConstant] = useState(0);
 
+  const [special, setSpecial] = useState(false);
+
   useEffect(() => {
     setStarted(true);
     newQuestion();
@@ -243,6 +245,14 @@ const Multiplication = () => {
       a ^= b;
     }
 
+    if (Math.random() >= 0.99) {
+      setSpecial(true);
+      a *= Math.floor(Math.random() * 4) + 11;
+      b *= Math.floor(Math.random() * 4) + 11;
+    } else {
+      setSpecial(false);
+    }
+
     setFactor1(a);
     setFactor2(b);
     setProduct(a * b);
@@ -407,6 +417,8 @@ const Multiplication = () => {
       {secondsPerQuestion <= 0 && <div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[128px] bold text-red-500">gg</div>
       </div> }
+
+      {special && <div className="text-6xl text-red-600">An Extra Hard Question! (1%)</div> }
 
       <audio src={CorrectSound} ref={correctRef}></audio>
       <audio src={IncorrectSound} ref={incorrectRef}></audio>

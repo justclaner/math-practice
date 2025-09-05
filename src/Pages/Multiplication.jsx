@@ -245,10 +245,10 @@ const Multiplication = () => {
       a ^= b;
     }
 
-    if (Math.random() >= 0.99) {
+    if (Math.random() >= 0.95) {
       setSpecial(true);
-      a *= Math.floor(Math.random() * 4) + 11;
-      b *= Math.floor(Math.random() * 4) + 11;
+      a *= Math.floor(Math.random() * 89) + 11;
+      b *= Math.floor(Math.random() * 89) + 11;
     } else {
       setSpecial(false);
     }
@@ -418,7 +418,7 @@ const Multiplication = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[128px] bold text-red-500">gg</div>
       </div> }
 
-      {special && <div className="text-6xl text-red-600">An Extra Hard Question! (1%)</div> }
+      {special && <div className="text-6xl text-red-600">An Extra Hard Question! (5%)</div> }
 
       <audio src={CorrectSound} ref={correctRef}></audio>
       <audio src={IncorrectSound} ref={incorrectRef}></audio>

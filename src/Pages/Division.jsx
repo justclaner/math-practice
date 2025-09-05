@@ -40,18 +40,18 @@ const Division = () => {
   const correctRef = useRef(null);
   const incorrectRef = useRef(null);
 
-  useEffect(() => {
-    if (incorrect > 0) {
-      setSecondsPerQuestion(secondsPerQuestion * 0.9 - 0.1);
-    }
-  }, [incorrect])
+  // useEffect(() => {
+  //   if (incorrect > 0) {
+  //     setSecondsPerQuestion(secondsPerQuestion * 0.9 - 0.1);
+  //   }
+  // }, [incorrect])
 
-  useEffect(() => {
-    if (correct > 0) {
-      setSecondsPerQuestion(secondsPerQuestion * 1.002);
-    }
-    setMaxStreak(Math.max(maxStreak, correct));
-  }, [correct])
+  // useEffect(() => {
+  //   if (correct > 0) {
+  //     setSecondsPerQuestion(secondsPerQuestion * 1.002);
+  //   }
+  //   setMaxStreak(Math.max(maxStreak, correct));
+  // }, [correct])
 
   useEffect(() => {
     console.log(difficulty);
@@ -326,11 +326,11 @@ const Division = () => {
           <InlineMath math={timeoutAnswer} />
         </div>
       )}
-      {secondsPerQuestion > 0.01 && <div className="text-red-700 text-5xl">Something feels a bit off today...</div>}
+      {/* {secondsPerQuestion > 0.01 && <div className="text-red-700 text-5xl">Something feels a bit off today...</div>}
       
       {secondsPerQuestion <= 0 && <div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[128px] bold text-red-500">gg</div>
-      </div> }
+      </div> } */}
 
       <audio src={CorrectSound} ref={correctRef}></audio>
       <audio src={IncorrectSound} ref={incorrectRef}></audio>

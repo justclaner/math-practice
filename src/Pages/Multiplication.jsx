@@ -255,7 +255,6 @@ const Multiplication = () => {
 
     setFactor1(a);
     setFactor2(b);
-    setProduct(a * b);
 
     setCurrTimer(secondsPerQuestion);
   };

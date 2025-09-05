@@ -37,6 +37,8 @@ const Division = () => {
 
   const [started, setStarted] = useState(false);
 
+  const [special, setSpecial] = useState(false);
+
   const correctRef = useRef(null);
   const incorrectRef = useRef(null);
 
@@ -193,9 +195,20 @@ const Division = () => {
       b = Math.floor(
         Math.random() * (maxDivisor - minDivisor + 1) + minDivisor
       );
+
       if (difficulty < 7) {
         a -= a % b;
       }
+
+      if (Math.random() >= 0.95) {
+        let multiplier = Math.floor(Math.random() * 68) + 31;
+        a *= multiplier;
+        b *= multiplier;
+        setSpecial(true);
+      } else {
+        setSpecial(false);
+      }
+
     }
 
     setDividend(a);
@@ -331,6 +344,8 @@ const Division = () => {
       {secondsPerQuestion <= 0 && <div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[128px] bold text-red-500">gg</div>
       </div> }
+
+      {special && <div className="text-6xl text-red-600">An Extra Hard Question! (5%)</div> }
 
       <audio src={CorrectSound} ref={correctRef}></audio>
       <audio src={IncorrectSound} ref={incorrectRef}></audio>

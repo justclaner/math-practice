@@ -245,13 +245,13 @@ const Multiplication = () => {
       a ^= b;
     }
 
-    if (Math.random() >= 0.95) {
-      setSpecial(true);
-      a *= Math.floor(Math.random() * 89) + 11;
-      b *= Math.floor(Math.random() * 89) + 11;
-    } else {
-      setSpecial(false);
-    }
+    // if (Math.random() >= 0.95) {
+    //   setSpecial(true);
+    //   a *= Math.floor(Math.random() * 89) + 11;
+    //   b *= Math.floor(Math.random() * 89) + 11;
+    // } else {
+    //   setSpecial(false);
+    // }
 
     setFactor1(a);
     setFactor2(b);

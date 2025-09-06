@@ -200,14 +200,14 @@ const Division = () => {
         a -= a % b;
       }
 
-      if (Math.random() >= 0.95) {
-        let multiplier = Math.floor(Math.random() * 68) + 31;
-        a *= multiplier;
-        b *= multiplier;
-        setSpecial(true);
-      } else {
-        setSpecial(false);
-      }
+      // if (Math.random() >= 0.95) {
+      //   let multiplier = Math.floor(Math.random() * 68) + 31;
+      //   a *= multiplier;
+      //   b *= multiplier;
+      //   setSpecial(true);
+      // } else {
+      //   setSpecial(false);
+      // }
 
     }
 

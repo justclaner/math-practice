@@ -24,7 +24,7 @@ const Multiplication = () => {
 
   const [maxStreak, setMaxStreak] = useState(0);
 
-  const [secondsPerQuestion, setSecondsPerQuestion] = useState(3);
+  const [secondsPerQuestion, setSecondsPerQuestion] = useState(2.5);
   const [currTimer, setCurrTimer] = useState(secondsPerQuestion);
 
   const [difficulty, setDifficulty] = useState(1);
@@ -53,7 +53,7 @@ const Multiplication = () => {
 
   useEffect(() => {
     if (incorrect > 0) {
-      setSecondsPerQuestion(secondsPerQuestion * 0.95 - 0.05);
+      setSecondsPerQuestion(secondsPerQuestion * 0.9 - 0.1);
     }
   }, [incorrect])
 
@@ -76,7 +76,7 @@ const Multiplication = () => {
     console.log(difficulty);
     switch (difficulty) {
       case 1:
-        setSecondsPerQuestion(3);
+        setSecondsPerQuestion(2.5);
 
         setMinFactor1(0);
         setMaxFactor1(10);

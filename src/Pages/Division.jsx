@@ -44,7 +44,7 @@ const Division = () => {
 
   useEffect(() => {
     if (incorrect > 0) {
-      setSecondsPerQuestion(secondsPerQuestion * 0.95 - 0.05);
+      setSecondsPerQuestion(secondsPerQuestion * 0.90 - 0.1);
     }
   }, [incorrect])
 

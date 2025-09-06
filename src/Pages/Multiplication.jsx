@@ -59,7 +59,7 @@ const Multiplication = () => {
 
   useEffect(() => {
     if (correct > 0) {
-      setSecondsPerQuestion(secondsPerQuestion * 1.002);
+      setSecondsPerQuestion(secondsPerQuestion * 1.01);
     }
     setMaxStreak(Math.max(maxStreak, correct));
   }, [correct])

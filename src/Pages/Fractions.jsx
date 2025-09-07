@@ -229,7 +229,7 @@ const Fractions = () => {
   useEffect(() => {
     setLatex(mode == "Simplifying" ? `\\frac{${numerator1}}{${denominator1}}`
             : mode == "Add/Subtract" ? `\\frac{${numerator1}}{${denominator1}}${operationType == 0 ? `+` : `-`}\\frac{${numerator2}}{${denominator2}}`
-            : mode == "Multiply/Divide" ? `\\frac{${numerator1}}{${denominator1}}${operationType == 0 ? `\\cdot` : `~÷~`}\\frac{${numerator2}}{${denominator2}}`
+            : mode == "Multiply/Divide" ? `\\frac{${numerator1}}{${denominator1}}${operationType == 0 ? `\\cdot` : `÷`}\\frac{${numerator2}}{${denominator2}}`
             : ``);
   }, [numerator1, numerator2, denominator1, denominator2])
 
@@ -417,7 +417,7 @@ const Fractions = () => {
       }}
     >
       <HomeButton />
-      <div className="text-3xl text-center">Division Practice</div>
+      <div className="text-3xl text-center">Fractions Practice</div>
       <div className="flex flex-row gap-3">
         <div className="text-xl">Mode: </div>
         <select
@@ -485,6 +485,9 @@ const Fractions = () => {
         
       </div>
       {/* Latex Display */}
+      <div className="text-center text-3xl">
+        <InlineMath math={`\\text{${mode == "Simplifying" ? `Simplify: ` : `Evaluate and simplify:`}}`} />
+        </div>
       <div className="text-center text-6xl">
         <InlineMath math={latex}></InlineMath>
       </div>

@@ -240,7 +240,9 @@ const Fractions = () => {
     }
     console.log("timer ended");
     let answerArr = answer.split("/");
-    setTimeoutAnswer(`${latex}=\\frac{${answerArr[0]}}{${answerArr[1]}}`);
+    setTimeoutAnswer(`${latex}=
+        ${answerArr.length == 1 ? `${answerArr[0]}` : `\\frac{${answerArr[0]}}{${answerArr[1]}}`}
+        `);
     setUserInput("");
     setCorrect(0);
     setTotalQuestions(totalQuestions + 1);

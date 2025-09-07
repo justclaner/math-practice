@@ -120,3 +120,14 @@ export const numToText = (num) => {
 
     return text.trim();
 }
+
+export const gcf = (a, b) => {
+    if (b == 0) {
+        return a;
+    }
+    return gcf(b, a % b);
+}
+
+export const lcm = (a, b) => {
+    return a * b / gcf(a, b);
+}

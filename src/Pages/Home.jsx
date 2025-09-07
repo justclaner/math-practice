@@ -11,6 +11,7 @@ const Home = () => {
       >
         <ButtonLink text="Multiplication" link="/multiplication" />
         <ButtonLink text="Division" link="/division" />
+        <ButtonLink text="Fractions" link="/fractions" />
       </div>
     </div>
   );

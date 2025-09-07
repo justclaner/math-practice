@@ -35,8 +35,6 @@ const Multiplication = () => {
   const [minFactor2, setMinFactor2] = useState(0);
   const [maxFactor2, setMaxFactor2] = useState(10);
 
-  const [started, setStarted] = useState(false);
-
   const correctRef = useRef(null);
   const incorrectRef = useRef(null);
 
@@ -47,7 +45,6 @@ const Multiplication = () => {
   const [special, setSpecial] = useState(false);
 
   useEffect(() => {
-    setStarted(true);
     newQuestion();
   }, []);
 
@@ -155,17 +152,10 @@ const Multiplication = () => {
     setTotalQuestions(0);
     setMaxStreak(0);
     setIncorrect(0);
-    if (started) {
-      setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`);
-    }
     newQuestion();
-    setStarted(true);
   }, [difficulty, constant, isRandomOrder]);
 
   useEffect(() => {
-    // if (started) {
-    //   setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`);
-    // }
     setCorrect(0);
     setMaxStreak(0);
     setTotalCorrect(0);

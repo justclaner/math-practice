@@ -35,8 +35,6 @@ const Division = () => {
   const [minDivisor, setMinDivisor] = useState(0);
   const [maxDivisor, setMaxDivisor] = useState(10);
 
-  const [started, setStarted] = useState(false);
-
   const [special, setSpecial] = useState(false);
 
   const correctRef = useRef(null);
@@ -122,16 +120,9 @@ const Division = () => {
     setTotalQuestions(0);
     setMaxStreak(0);
     setIncorrect(0);
-    if (started) {
-      setTimeoutAnswer(`\\frac{${dividend}}{${divisor}}=${quotient}`);
-    }
-    setStarted(true);
   }, [difficulty]);
 
   useEffect(() => {
-    // if (started) {
-    //   setTimeoutAnswer(`${factor1}\\cdot${factor2}=${product}`);
-    // }
     setCorrect(0);
     setMaxStreak(0);
     setTotalCorrect(0);
@@ -239,11 +230,11 @@ const Division = () => {
         incorrectRef.current.currentTime = 0;
         incorrectRef.current.play();
       }
-      setAnswer("");
       setIncorrect(incorrect + 1);
       setFeedback("INCORRECT");
       setCorrect(0);
     }
+    setAnswer("");
   };
 
   return (
@@ -298,7 +289,7 @@ const Division = () => {
           }}
           className="text-3xl border-2 border-black px-2 py-1 rounded-xl"
           style={{
-            width: difficulty == 9 ? `125px` : `${100 + difficulty * 25}px`,
+            width: `${100 + difficulty * 25}px`,
           }}
         />
         <button

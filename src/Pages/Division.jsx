@@ -42,13 +42,13 @@ const Division = () => {
 
   useEffect(() => {
     if (incorrect > 0) {
-      setSecondsPerQuestion(secondsPerQuestion * 0.90 - 0.1);
+      //setSecondsPerQuestion(secondsPerQuestion * 0.90 - 0.1);
     }
   }, [incorrect])
 
   useEffect(() => {
     if (correct > 0) {
-      setSecondsPerQuestion(secondsPerQuestion * 1.01);
+      //setSecondsPerQuestion(secondsPerQuestion * 1.01);
     }
     setMaxStreak(Math.max(maxStreak, correct));
   }, [correct])
@@ -61,27 +61,27 @@ const Division = () => {
 
         break;
       case 2:
-        setSecondsPerQuestion(5);
+        setSecondsPerQuestion(10);
 
-        setMinDividend(0);
+        setMinDividend(10);
         setMaxDividend(100);
 
         setMinDivisor(1);
         setMaxDivisor(10);
         break;
       case 3:
-        setSecondsPerQuestion(60);
+        setSecondsPerQuestion(20);
 
-        setMinDividend(10);
+        setMinDividend(100);
         setMaxDividend(1000);
 
         setMinDivisor(1);
         setMaxDivisor(10);
         break;
       case 4:
-        setSecondsPerQuestion(80);
+        setSecondsPerQuestion(30);
 
-        setMinDividend(100);
+        setMinDividend(1000);
         setMaxDividend(10000);
 
         setMinDivisor(1);
@@ -90,7 +90,7 @@ const Division = () => {
       case 5:
         setSecondsPerQuestion(100);
 
-        setMinDividend(1000);
+        setMinDividend(10000);
         setMaxDividend(100000);
 
         setMinDivisor(1);
@@ -99,7 +99,7 @@ const Division = () => {
       case 6:
         setSecondsPerQuestion(80);
 
-        setMinDividend(1000);
+        setMinDividend(10000);
         setMaxDividend(100000);
 
         setMinDivisor(1);
@@ -108,7 +108,7 @@ const Division = () => {
       case 7:
         setSecondsPerQuestion(80);
 
-        setMinDividend(1000);
+        setMinDividend(100);
         setMaxDividend(100000);
 
         setMinDivisor(1);
@@ -260,7 +260,7 @@ const Division = () => {
           }}
         >
           <option value={1}>Level 1: Division Tables</option>
-          <option value={2}>Level 2: 2-digit divided by 1-digit</option>
+          <option value={2}>Level 2: 2-digit divided by 1-digit (no remainder)</option>
           <option value={3}>
             Level 3: 3-digit divided by 1-digit (no remainder)
           </option>
@@ -330,7 +330,7 @@ const Division = () => {
           <InlineMath math={timeoutAnswer} />
         </div>
       )}
-      {secondsPerQuestion > 0.01 && <div className="text-red-700 text-5xl">Something feels a bit off today...</div>}
+      {/* {secondsPerQuestion > 0.01 && <div className="text-red-700 text-5xl">Something feels a bit off today...</div>} */}
       
       {secondsPerQuestion <= 0 && <div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[128px] bold text-red-500">gg</div>

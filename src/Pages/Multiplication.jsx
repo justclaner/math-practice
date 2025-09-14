@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
-import { letterGrade, numToText } from "../logic";
+import { letterGrade, numToText } from "../helper/logic";
 
 import CorrectSound from "../assets/correct.mp3";
 import IncorrectSound from "../assets/incorrect.mp3";

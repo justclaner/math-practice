@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
-import { letterGrade, numToText } from "../logic";
+import { letterGrade, numToText } from "../helper/logic";
 
 import CorrectSound from "../assets/correct.mp3";
 import IncorrectSound from "../assets/incorrect.mp3";
@@ -70,7 +70,7 @@ const Division = () => {
         setMaxDivisor(10);
         break;
       case 3:
-        setSecondsPerQuestion(20);
+        setSecondsPerQuestion(30);
 
         setMinDividend(100);
         setMaxDividend(1000);
@@ -79,7 +79,7 @@ const Division = () => {
         setMaxDivisor(10);
         break;
       case 4:
-        setSecondsPerQuestion(30);
+        setSecondsPerQuestion(45);
 
         setMinDividend(1000);
         setMaxDividend(10000);

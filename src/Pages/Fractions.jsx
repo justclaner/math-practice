@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
-import { letterGrade, numToText, gcf, lcm } from "../logic";
+import { letterGrade, numToText, gcf, lcm } from "../helper/logic";
 
 import CorrectSound from "../assets/correct.mp3";
 import IncorrectSound from "../assets/incorrect.mp3";
@@ -82,7 +82,7 @@ const Fractions = () => {
     if (mode == "Simplifying") {
         switch (difficulty) {
             case 1:
-                setSecondsPerQuestion(15);
+                setSecondsPerQuestion(10);
                 setMinNumerator(1);
                 setMaxNumerator(10);
 
@@ -90,7 +90,7 @@ const Fractions = () => {
                 setMaxDenominator(9);
                 break;
             case 2:
-                setSecondsPerQuestion(30);
+                setSecondsPerQuestion(20);
 
                 setMinNumerator(1);
                 setMaxNumerator(10);
@@ -99,7 +99,7 @@ const Fractions = () => {
                 setMaxDenominator(9);
                 break;
             case 3:
-                setSecondsPerQuestion(45);
+                setSecondsPerQuestion(30);
 
                 setMinNumerator(1);
                 setMaxNumerator(25);
@@ -108,7 +108,7 @@ const Fractions = () => {
                 setMaxDenominator(9);
                 break;
             case 4:
-                setSecondsPerQuestion(60);
+                setSecondsPerQuestion(40);
 
                 setMinNumerator(1);
                 setMaxNumerator(10000);
@@ -120,7 +120,7 @@ const Fractions = () => {
     } else if (mode == 'Add/Subtract') {
         switch (difficulty) {
             case 1:
-                setSecondsPerQuestion(20);
+                setSecondsPerQuestion(15);
 
                 setMinNumerator(1);
                 setMaxNumerator(20);

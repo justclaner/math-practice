@@ -229,7 +229,8 @@ const Fractions = () => {
   useEffect(() => {
     setLatex(mode == "Simplifying" ? `\\frac{${numerator1}}{${denominator1}}`
             : mode == "Add/Subtract" ? `\\frac{${numerator1}}{${denominator1}}${operationType == 0 ? `+` : `-`}\\frac{${numerator2}}{${denominator2}}`
-            : mode == "Multiply/Divide" ? `\\frac{${numerator1}}{${denominator1}}${operationType == 0 ? `\\cdot` : `÷`}\\frac{${numerator2}}{${denominator2}}`
+            : mode == "Multiply/Divide" ? 
+              (operationType == 0 ? `\\frac{${numerator1}}{${denominator1}}\\cdot\\frac{${numerator2}}{${denominator2}}` : `\\frac{\\frac{${numerator1}}{${denominator1}}}{\\frac{${numerator2}}{${denominator2}}}`)
             : ``);
   }, [numerator1, numerator2, denominator1, denominator2])
 

@@ -1,22 +1,9 @@
 import { decimalToFraction, factorialApprox, constantValues } from "./logic";
+import { functions, evaluateFunction, functionArguments } from "./functions";
 
 const operators = new Set([
     '+','-',"*","/","^", "NEG", '!'
 ])
-
-const trigFunctions = new Set([
-    'sin', 'cos', 'tan', 'csc', 'sec', 'cot'
-]);
-
-const expFunctions = new Set([
-    'log', 'ln', 'sqrt', 'cbrt' 
-]);
-
-const miscFunctions = new Set([
-    'max', 'min'
-])
-
-const functions = new Set([...trigFunctions, ...expFunctions, ...miscFunctions]);
 
 const constants = new Set([
     'π', 'e'
@@ -65,6 +52,8 @@ export const tokenize = (str) => {
             rawTokens.push(str.slice(i));
         }
     }
+    
+    //console.log(rawTokens);
 
     //put together functions
     let filteredTokens1 = [];
@@ -144,6 +133,7 @@ export const tokenize = (str) => {
             }
         }
     }
+
     //change each token in filteredTokens1 to be an object giving the information on what type of token it is
     //each filteredTokens1 element will be of an json object in the form {type: [type], value: [value]}
     for (let j = 0; j < filteredTokens1.length; j++) {
@@ -245,7 +235,6 @@ export const shuntingYard = (tokens) => {
         const token = tokens[i];
         const type = token.type;
         const value = token.value;
-
         if (type == "number" || type == "constant" || type == "variable") {
             output.push(token);
         } else if (type == "function") {
@@ -273,11 +262,6 @@ export const shuntingYard = (tokens) => {
                     return new Error("Mismatched parentheses!");
                 }
 
-                //expression was (); invalid
-                // if (operators[operators.length - 1].value == '(') {
-                //     return new Error("Empty parentheses!")
-                // }
-
                 while (operators[operators.length - 1].value != '(') {
                     output.push(operators.pop());
                 }
@@ -301,7 +285,6 @@ export const shuntingYard = (tokens) => {
         }
         output.push(operators.pop());
     }
-
     return output;
 }
 
@@ -328,7 +311,7 @@ export const evaluateRPN = (tokens, fraction, absorbConstants) => {
 
         if (type == "operator") {
             if (val == '!') {
-                if (i <= 0) {
+                if (i < 1) {
                     return new Error(`Not enough operands for operator (${val})!`);
                 }
 
@@ -343,7 +326,7 @@ export const evaluateRPN = (tokens, fraction, absorbConstants) => {
                 tokens[i - 1].value = factorialApprox(tokens[i - 1].value);
                 tokens.splice(i, 1);
             } else if (val == 'NEG') {
-                if (i <= 0) {
+                if (i < 1) {
                     return new Error(`Not enough operands for operator (${val})!`);
                 }
 
@@ -358,7 +341,7 @@ export const evaluateRPN = (tokens, fraction, absorbConstants) => {
                 tokens[i - 1].value *= -1;
                 tokens.splice(i, 1);
             } else {
-                if (i <= 1) {
+                if (i < 2) {
                     return new Error(`Not enough operands for operator (${val})!`);
                 }
 
@@ -402,6 +385,24 @@ export const evaluateRPN = (tokens, fraction, absorbConstants) => {
                 i--;
                 tokens.splice(i, 2);
             }
+        } else if (type == "function") {
+            const numArgs = functionArguments.get(val);
+            if (i < numArgs) {
+                return new Error(`Expected ${numArgs} arguments for function ${val} but got ${i + 1} instead!`);
+            }
+            const args = tokens.slice(i - numArgs, i);
+            let argVals = [];
+
+            for (let j = 0; j < args.length; j++) {
+                argVals.push(args[j].value);
+            }
+
+            tokens[i - numArgs] = {
+                type: "number",
+                value: evaluateFunction(val, argVals)
+            }
+            i -= (numArgs - 1);
+            tokens.splice(i, numArgs);
         }
     }
     return tokens[0].value;

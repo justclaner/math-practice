@@ -1,3 +1,5 @@
+import { decimalToFraction, factorialApprox, constantValues } from "./logic";
+
 const operators = new Set([
     '+','-',"*","/","^", "NEG", '!'
 ])
@@ -10,11 +12,30 @@ const expFunctions = new Set([
     'log', 'ln', 'sqrt', 'cbrt' 
 ]);
 
-const functions = new Set([...trigFunctions, ...expFunctions]);
+const miscFunctions = new Set([
+    'max', 'min'
+])
+
+const functions = new Set([...trigFunctions, ...expFunctions, ...miscFunctions]);
 
 const constants = new Set([
     'π', 'e'
 ]);
+
+const operatorPrecedence = new Map([
+    ['!', 4],
+    ['^', 3],
+    ['NEG', 2],
+    ['*', 1],
+    ['/', 1],
+    ['+', 0],
+    ['-', 0]
+])
+
+const rightAssociative = new Set([
+    '^',
+    'NEG'
+    ])
 
 /**
  * 
@@ -29,13 +50,20 @@ export const tokenize = (str) => {
     //filter once
     let i = 0;
     for (let j = 0; j < str.length; j++) {
-        if (operators.has(str[j]) || str[j] == 'π' || str[j] == '(' || str[j] == ')' || /[a-zA-Z]/.test(str[j])) {
+        if (operators.has(str[j]) || str[j] == 'π' || str[j] == '(' || str[j] == ')' || str[j] == ',' || /[a-zA-Z]/.test(str[j])) {
             if (i < j) {
                 rawTokens.push(Number(str.slice(i, j)));
             }
             rawTokens.push(str[j]);
             i = j + 1;
         } 
+    }
+    if (i < str.length) {
+        if (!isNaN(Number(str.slice(i)))) {
+            rawTokens.push(Number(str.slice(i)));
+        } else {
+            rawTokens.push(str.slice(i));
+        }
     }
 
     //put together functions
@@ -46,7 +74,6 @@ export const tokenize = (str) => {
 
     //filter second time for functions
     for (let j = 0; j < rawTokens.length; j++) {
-        console.log(rawTokens[j]);
         //if current token is an alphabet symbol, enter checkingIsFunction mode
         if (/[a-zA-Z]/.test(rawTokens[j])) {
             //set startIndex if currently entering the checkIsFunction mode, otherwise no
@@ -61,20 +88,16 @@ export const tokenize = (str) => {
             }
             checkingIsFunction = true;
         } else {
-            console.log("not letter!")
             //seen a number, operator, or parentheses
             checkingIsFunction = false;
 
             //check if there are any alphabet symbols to parse before pushing the number/operator/parentheses token
             if (startIndex != -1 && endIndex != -1) {
-                console.log("seen a function???")
                 let text = "";
-                console.log(startIndex, endIndex)
                 //store alphabet symbols in text
                 for (let k = startIndex; k <= endIndex; k++) {
                     text += rawTokens[k];
                 }
-                console.log(text);
 
                 //if it is a recognized function, push it as so
                 //handles case where it is variables and then a function (ex: abcsin(x)); note impossible for two consecutive functions
@@ -92,17 +115,13 @@ export const tokenize = (str) => {
                         }
                     }
                 }
-                console.log(`funcStartIdx: ${funcStartIdx}`);
                 //push individually as variables until reaching funcStartIdx
                 for (let k = startIndex; k <= endIndex; k++) {
-                    console.log(`k ${k} == funcStartIdx ${funcStartIdx + startIndex}: ${k == funcStartIdx + startIndex}`)
-
                     //funcStartIdx has an initial value of -1, so impossible to reach if no function is seen
                     if (k == funcStartIdx + startIndex) {
                         filteredTokens1.push(text.slice(funcStartIdx));
                         break;
                     }
-                    
                     filteredTokens1.push(rawTokens[k]);
                 } 
 
@@ -116,9 +135,15 @@ export const tokenize = (str) => {
 
         if (checkingIsFunction) {
             endIndex = j;
+            
+            if (endIndex == rawTokens.length - 1) {
+                //push individually as variables (if it ended without parenthesis, they must be variables)
+                for (let k = startIndex; k <= endIndex; k++) {
+                    filteredTokens1.push(rawTokens[k]);
+                } 
+            }
         }
     }
-
     //change each token in filteredTokens1 to be an object giving the information on what type of token it is
     //each filteredTokens1 element will be of an json object in the form {type: [type], value: [value]}
     for (let j = 0; j < filteredTokens1.length; j++) {
@@ -128,7 +153,6 @@ export const tokenize = (str) => {
             "type": "",
             "value": tok
         }
-        
         //number is any decimal, a constant is a greek symbol or e
         if (typeof tok == "number") {
             type = "number";
@@ -140,14 +164,15 @@ export const tokenize = (str) => {
             type = "function";
         } else if (tok == '(' || tok == ')') {
             type = "parenthesis"
+        } else if (tok == ',') {
+            type = "separator";
         } else if (tok.length == 1) {
             type = "variable";
         } else {
-            type = "unknown"
+            type = "unknown";
         }
 
         newObj.type = type;
-
         filteredTokens1[j] = newObj;
     }
 
@@ -190,7 +215,7 @@ export const tokenize = (str) => {
         const tok = filteredTokens2[j];
         const prevTok = filteredTokens2[j - 1];
         const leftSide = new Set(["number", "constant", "variable", ')']);
-        const rightSide = new Set(["number", "constant", "variable", '('])
+        const rightSide = new Set(["number", "constant", "variable", "function", '('])
         
         //two consecutive number tokens are impossible but we handle that case anyways
         if ((leftSide.has(prevTok.type) || leftSide.has(prevTok.value)) && (rightSide.has(tok.type) || rightSide.has(tok.value))) {
@@ -201,4 +226,183 @@ export const tokenize = (str) => {
     }
 
     return filteredTokens3;
+}
+
+/**
+ * returns a mathematical expression in reverse polish notation as an array
+ * @param {Array} tokens 
+ * @returns {Array}
+ */
+export const shuntingYard = (tokens) => {
+    if (typeof tokens != "object") {
+        return;
+    }
+
+    let output = [];
+    let operators = [];
+
+    for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+        const type = token.type;
+        const value = token.value;
+
+        if (type == "number" || type == "constant" || type == "variable") {
+            output.push(token);
+        } else if (type == "function") {
+            operators.push(token);
+        } else if (type == "operator") {
+            while (operators.length > 0 
+                && operators[operators.length - 1].value != '('
+                && (operatorPrecedence.get(operators[operators.length - 1].value) > operatorPrecedence.get(value)
+                    || (operatorPrecedence.get(operators[operators.length - 1].value) == operatorPrecedence.get(value))
+                        && !rightAssociative.has(value)
+                    )
+                ) {
+                    output.push(operators.pop());
+            }
+            operators.push(token);
+        } else if (type == "separator") {
+            while (operators.length > 0 && operators[operators.length - 1].value != '(') {
+                output.push(operators.pop());
+            }
+        } else if (type == "parenthesis") {
+            if (value == '(') {
+                operators.push(token);
+            } else if (value == ')') {
+                if (operators.length == 0) {
+                    return new Error("Mismatched parentheses!");
+                }
+
+                //expression was (); invalid
+                // if (operators[operators.length - 1].value == '(') {
+                //     return new Error("Empty parentheses!")
+                // }
+
+                while (operators[operators.length - 1].value != '(') {
+                    output.push(operators.pop());
+                }
+
+                //there should be a left-parenthesis at the top of the stack now
+                if (operators.length == 0 || operators[operators.length - 1].value != '(') {
+                    return new Error("Mismatched parentheses!");
+                }
+
+                operators.pop();
+                if (operators.length > 0 && operators[operators.length - 1].type == "function") {
+                    output.push(operators.pop());
+                }
+            }
+        }
+    }
+
+    while (operators.length > 0) {
+        if (operators[operators.length - 1].value == '(') {
+            return new Error("Mismatched parentheses!");
+        }
+        output.push(operators.pop());
+    }
+
+    return output;
+}
+
+/**
+ * returns a number given tokens in reverse polish notation;
+ * returns undefined if there are any variables
+ * @param {Array} tokens 
+ * @param {boolean} fraction true if answer should have fractional coefficients
+ * @param {boolean} absorbConstants true if constants should be absorbed into the coefficient
+ */
+export const evaluateRPN = (tokens, fraction, absorbConstants) => {
+    let i = 0;
+    while (i < tokens.length) {
+        const type = tokens[i].type;
+        const val = tokens[i].value;
+        if (type == "variable") {
+            return;
+        }
+
+        if (type == "number" || type == "constant") {
+            i++;
+            continue;
+        }
+
+        if (type == "operator") {
+            if (val == '!') {
+                if (i <= 0) {
+                    return new Error(`Not enough operands for operator (${val})!`);
+                }
+
+                if (tokens[i - 1].type == "constant") {
+                    tokens[i - 1].type = "number";
+                    tokens[i - 1].value = constantValues.get(tokens[i - 1].value);
+                }
+
+                if (tokens[i - 1].type != "number") {
+                    return new Error(`Not a number!`);
+                }
+                tokens[i - 1].value = factorialApprox(tokens[i - 1].value);
+                tokens.splice(i, 1);
+            } else if (val == 'NEG') {
+                if (i <= 0) {
+                    return new Error(`Not enough operands for operator (${val})!`);
+                }
+
+                if (tokens[i - 1].type == "constant") {
+                    tokens[i - 1].type = "number";
+                    tokens[i - 1].value = constantValues.get(tokens[i - 1].value);
+                }
+
+                if (tokens[i - 1].type != "number") {
+                    return new Error(`Not a number!`);
+                }
+                tokens[i - 1].value *= -1;
+                tokens.splice(i, 1);
+            } else {
+                if (i <= 1) {
+                    return new Error(`Not enough operands for operator (${val})!`);
+                }
+
+                if (tokens[i - 1].type == "constant") {
+                    tokens[i - 1].type = "number";
+                    tokens[i - 1].value = constantValues.get(tokens[i - 1].value);
+                }
+
+                if (tokens[i - 1].type != "number") {
+                    return new Error(`Not a number!`);
+                }
+
+                if (tokens[i - 2].type == "constant") {
+                    tokens[i - 2].type = "number";
+                    tokens[i - 2].value = constantValues.get(tokens[i - 1].value);
+                }
+
+                if (tokens[i - 2].type != "number") {
+                    return new Error(`Not a number!`);
+                }
+                const a = tokens[i - 2].value;
+                const b = tokens[i - 1].value;
+
+                switch (val) {
+                    case '^':
+                        tokens[i - 2].value = Math.pow(a, b);
+                        break;
+                    case '*':
+                        tokens[i - 2].value = a * b;
+                        break;
+                    case '/':
+                        tokens[i - 2].value = a / b;
+                        break;
+                    case '-':
+                        tokens[i - 2].value = a - b;
+                        break;
+                    case '+':
+                        tokens[i - 2].value = a + b;
+                        break;
+                }
+                i--;
+                tokens.splice(i, 2);
+            }
+        }
+    }
+    return tokens[0].value;
 }

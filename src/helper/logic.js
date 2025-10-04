@@ -131,3 +131,33 @@ export const gcf = (a, b) => {
 export const lcm = (a, b) => {
     return a * b / gcf(a, b);
 }
+
+/**
+ * returns an array [numerator, denominator] representing the fraction
+ * @param {Number} decimal 
+ */
+export const decimalToFraction = (decimal) => {
+    if (typeof decimal != "number") {
+        return;
+    }
+
+    let decimalPlaces = 0;
+    while (decimal * Math.pow(10, decimalPlaces) % 1 != 0) {
+        decimalPlaces++;
+    }
+    let numerator = decimal * Math.pow(10, decimalPlaces);
+    let denominator = Math.pow(10, decimalPlaces);
+
+    //simplify the fraction
+    let g = gcf(numerator, denominator);
+    return [numerator / g, denominator / g];
+}
+
+export const factorialApprox = (n) => {
+    return Math.sqrt(n) * Math.pow((n / Math.E), n) * Math.pow((8 * Math.pow(n, 3) + 4 * Math.pow(n, 2) + n + 1 / 30), 1 / 6);
+}
+
+export const constantValues = new Map([
+    ['π', Math.PI],
+    ['e', Math.E]
+])

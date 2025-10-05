@@ -483,29 +483,42 @@ export const rpnToLatex = (tokens) => {
 
                 if (val == '^') {
                     if (a.type == "sum/diff" || a.type == "product" || a.type == "quotient" 
-                        || a.type == "exponent" || a.type == "factorial" || a.type == "neg") {
+                        || a.type == "exponent" || a.type == "factorial" || a.type == "neg" || a.type == "algebraic") {
                             tokens[i - 2].value = `\\left(${a.value}\\right)^{${b.value}}`;
                         } else {
                             tokens[i - 2].value = `${a.value}^{${b.value}}`;
                         }
-                    tokens[i - 2].type = "exponent";
+                    if (a.type == "variable" || a.type == "algebraic") {
+                        tokens[i - 2].type = "algebraic";
+                    } else {
+                        tokens[i - 2].type = "exponent";
+                    }
                 } else if (val == '*') {
                     let usingParenthesis = false;
                     let left = a.value;
                     let right = b.value;
 
-                    if (a.type == "sum/diff" || a.type == "neg") {
+                    if (a.type != "algebraic" && (a.type == "sum/diff" || a.type == "neg")) {
                         left = `\\left(${a.value}\\right)`;
                         usingParenthesis = true;
                     }
 
-                    if (b.type == "sum/diff" || b.type == "neg") {
+                    if (b.type != "algebraic" && (b.type == "sum/diff" || b.type == "neg")) {
                         right = `\\left(${b.value}\\right)`;
                         usingParenthesis = true;
                     }
                     
-                    tokens[i - 2].value = `${left}${usingParenthesis ? `` : `\\cdot`}${right}`;
-                    tokens[i - 2].type = "product";
+                    if (b.type == "algebraic") {
+                        tokens[i - 2].value = `${left}${right}`
+                    } else {
+                        tokens[i - 2].value = `${left}${usingParenthesis ? `` : `\\cdot `}${right}`;
+                    }
+
+                    if (a.type == "algebraic" && b.type == "algebraic") {
+                        tokens[i - 2].type = "algebraic";
+                    } else {
+                        tokens[i - 2].type = "product";
+                    }
                 } else if (val == '/') {
                     tokens[i - 2].value = `\\frac{${a.value}}{${b.value}}`;
                     tokens[i - 2].type = "quotient";

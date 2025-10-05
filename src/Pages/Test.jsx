@@ -21,9 +21,14 @@ const Test = () => {
     const [latex, setLatex] = useState(null);
     const [problem, setProblem] = useState(null);
     useEffect(() => {
-        const prob = generatePEMDASProblem(['+', '-', '*', '/', '^', '!'], 5, 100);
-        console.log(prob);
-        setProblem(prob[1]);
+        // const prob = generatePEMDASProblem(['+', '-', '*', '/', '^', '!'], 5, 100);
+        // setProblem(prob[1]);
+
+        const input = "2x^3";
+        const tokens = tokenize(input);
+        const rpn = shuntingYard(tokens);
+        const lat = rpnToLatex(rpn);
+        setProblem(lat);
     }, [])
 
     // useEffect(() => {

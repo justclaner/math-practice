@@ -82,20 +82,28 @@ const Pemdas = () => {
         switch (difficulty) {
             case 1:
                 setSecondsPerQuestion(30);
-                setOperations(['+','-','*','/','NEG']);
+                setOperations(['+','-','*','/']);
                 setOperationCount(5);
                 setMaxAbsAns(40);
                 break;
             case 2:
                 setSecondsPerQuestion(45);
-                setOperations(['+','-','*','/','NEG','^']);
+                setOperations([
+                    '+','-','*','/','^',
+                    '+','-','*','/','^',
+                    'NEG'
+                ]);
                 setOperationCount(5);
                 setMaxAbsAns(50);
 
                 break;
             case 3:
                 setSecondsPerQuestion(60);
-                setOperations(['+','-','*','/','NEG', '^', '!']);
+                setOperations([
+                    '+','-','*','/', '^', '!',
+                    '+','-','*','/', '^', '!',
+                    'NEG'
+                ]);
                 setOperationCount(6);
                 setMaxAbsAns(100);
                 break;
@@ -195,7 +203,7 @@ const Pemdas = () => {
             <select
             className="border-2 border-black px-2 pb-1 pt-0.5 rounded-md w-fit"
             onChange={(e) => {
-                setDifficulty(e.target.value);
+                setDifficulty(Number(e.target.value));
             }}
             >
             <option value={1}>Level 1: Add/Sub/Mult/Div</option>

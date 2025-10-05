@@ -11,51 +11,58 @@ export const generatePEMDASProblem = (operations, operationCount, maxAbsAns) => 
 
     while (i < operationCount) {
         const operation = operations[Math.floor(Math.random() * operations.length)];
-        let min = 2;
-        let max = 10;
+        let numPool = [2, 3, 4, 5, 6, 7, 8, 9, 10];
         switch (operation) {
             case '!':
-                min = 0;
-                max = 5;
+                numPool = [
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5,
+                    0, 1
+                ]
                 break;
             case '^':
-                min = 0;
-                max = 5;
+                numPool = [
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5, 
+                    2, 3, 4, 5, 
+                    0, 1
+                ]
                 break;
             default:
                 break;
         }
 
-
-
         if (operation == '!' || operation == 'NEG') {
             if (numberTokens < 1) {
                 tokens.push({
                     type: "number",
-                    value: Math.floor(Math.random() * (max - min)) + min
+                    value: numPool[Math.floor(Math.random() * numPool.length)]
                 });
                 numberTokens++;
             }
         } else {
-            if (operation == '^' && Math.random() <= 0.5) {
-                while (numberTokens < 2) {
+            while (numberTokens < 2) {
+                if (Math.random() <= 0.5) {
                     tokens = [{
                         type: "number",
-                        value: Math.floor(Math.random() * (max - min)) + min
+                        value: numPool[Math.floor(Math.random() * numPool.length)]
                     }, ...tokens];
-                    numberTokens++;
-                }
-                numberTokens--;
-            } else {
-                while (numberTokens < 2) {
+                } else {
                     tokens.push({
                         type: "number",
-                        value: Math.floor(Math.random() * (max - min)) + min
+                        value: numPool[Math.floor(Math.random() * numPool.length)]
                     });
-                    numberTokens++;
                 }
-                numberTokens--;
+                numberTokens++;
             }
+            numberTokens--;
         }
 
         tokens.push({

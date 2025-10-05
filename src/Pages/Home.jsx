@@ -12,6 +12,7 @@ const Home = () => {
         <ButtonLink text="Multiplication" link="/multiplication" />
         <ButtonLink text="Division" link="/division" />
         <ButtonLink text="Fractions" link="/fractions" />
+        <ButtonLink text="PEMDAS" link="/pemdas" />
       </div>
     </div>
   );

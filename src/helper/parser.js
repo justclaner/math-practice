@@ -483,7 +483,7 @@ export const rpnToLatex = (tokens) => {
 
                 if (val == '^') {
                     if (a.type == "sum/diff" || a.type == "product" || a.type == "quotient" 
-                        || a.type == "factorial" || a.type == "neg") {
+                        || a.type == "exponent" || a.type == "factorial" || a.type == "neg") {
                             tokens[i - 2].value = `\\left(${a.value}\\right)^{${b.value}}`;
                         } else {
                             tokens[i - 2].value = `${a.value}^{${b.value}}`;
@@ -551,4 +551,10 @@ export const rpnToLatex = (tokens) => {
     }
 
     return tokens[0].value;
+}
+
+export const evaluateUserInput = (userInput) => {
+    const tokens = tokenize(userInput);
+    const rpn = shuntingYard(tokens);
+    return evaluateRPN(rpn);
 }

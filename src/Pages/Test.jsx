@@ -21,7 +21,7 @@ const Test = () => {
     const [latex, setLatex] = useState(null);
     const [problem, setProblem] = useState(null);
     useEffect(() => {
-        const prob = generatePEMDASProblem(['+', '-', '*', '/', '^', '!'], 5, 20);
+        const prob = generatePEMDASProblem(['+', '-', '*', '/', '^', '!'], 5, 100);
         console.log(prob);
         setProblem(prob[1]);
     }, [])

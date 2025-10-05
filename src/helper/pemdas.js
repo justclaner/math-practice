@@ -20,7 +20,7 @@ export const generatePEMDASProblem = (operations, operationCount, maxAbsAns) => 
                 break;
             case '^':
                 min = 0;
-                max = 3;
+                max = 5;
                 break;
             default:
                 break;
@@ -37,14 +37,25 @@ export const generatePEMDASProblem = (operations, operationCount, maxAbsAns) => 
                 numberTokens++;
             }
         } else {
-            while (numberTokens < 2) {
-                tokens.push({
-                    type: "number",
-                    value: Math.floor(Math.random() * (max - min)) + min
-                });
-                numberTokens++;
+            if (operation == '^' && Math.random() <= 0.5) {
+                while (numberTokens < 2) {
+                    tokens = [{
+                        type: "number",
+                        value: Math.floor(Math.random() * (max - min)) + min
+                    }, ...tokens];
+                    numberTokens++;
+                }
+                numberTokens--;
+            } else {
+                while (numberTokens < 2) {
+                    tokens.push({
+                        type: "number",
+                        value: Math.floor(Math.random() * (max - min)) + min
+                    });
+                    numberTokens++;
+                }
+                numberTokens--;
             }
-            numberTokens--;
         }
 
         tokens.push({

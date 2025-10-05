@@ -133,29 +133,88 @@ export const lcm = (a, b) => {
 }
 
 /**
- * returns an array [numerator, denominator] representing the fraction
+ * returns an array [numerator, denominator] representing the fraction based on
+ * the Stern-Brocot Tree Search
  * @param {Number} decimal 
  */
-export const decimalToFraction = (decimal) => {
-    if (typeof decimal != "number") {
-        return;
+export const decimalToFraction = (decimal, tolerance = 1e-20) => {
+  if (typeof decimal != "number" || !isFinite(decimal)) return [NaN, NaN];
+
+  let sign = Math.sign(decimal);
+  decimal = Math.abs(decimal);
+
+  if (Math.floor(decimal) == decimal) {
+    return [sign * decimal, 1];
+  }
+
+  let lower_n = 0;
+  let lower_d = 1;
+  let upper_n = 1;
+  let upper_d = 0;
+
+  while (true) {
+    const middle_n = lower_n + upper_n;
+    const middle_d = lower_d + upper_d;
+
+    if (middle_d * (decimal + tolerance) < middle_n) {
+      // too high
+      upper_n = middle_n;
+      upper_d = middle_d;
+    } else if (middle_n < (decimal - tolerance) * middle_d) {
+      // too low
+      lower_n = middle_n;
+      lower_d = middle_d;
+    } else {
+      let g = gcf(middle_n, middle_d);
+      return [sign * (middle_n / g), middle_d / g];
+    }
+  }
+};
+
+export const gammaApprox = (z) => {
+    if (z == 1) {
+        return 1;
     }
 
-    let decimalPlaces = 0;
-    while (decimal * Math.pow(10, decimalPlaces) % 1 != 0) {
-        decimalPlaces++;
+    // handles negative integers (undefined for gamma function)
+    if (z <= 0 && Number.isInteger(z)) {
+        return Infinity;
     }
-    let numerator = decimal * Math.pow(10, decimalPlaces);
-    let denominator = Math.pow(10, decimalPlaces);
+    
+    // handles negative non-integers, use the reflection formula
+    // Γ(z)Γ(1-z) = π/sin(πz)
+    if (z < 0.5) {
+        return Math.PI / (Math.sin(Math.PI * z) * gammaApprox(1 - z));
+    }
+    
+    // Lanczos approximation coefficients (g=7, n=9)
+    const g = 7;
+    const coef = [
+        0.99999999999980993,
+        676.5203681218851,
+        -1259.1392167224028,
+        771.32342877765313,
+        -176.61502916214059,
+        12.507343278686905,
+        -0.13857109526572012,
+        9.9843695780195716e-6,
+        1.5056327351493116e-7
+    ];
+    
+    // Shift z for the Lanczos formula
+    z -= 1;
+    
+    let x = coef[0];
+    for (let i = 1; i < coef.length; i++) {
+        x += coef[i] / (z + i);
+    }
+    
+    const t = z + g + 0.5;
+    const result = Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+    
+    return Number.isInteger(z) && z >= 0 ? Math.floor(result) : result;
+};
 
-    //simplify the fraction
-    let g = gcf(numerator, denominator);
-    return [numerator / g, denominator / g];
-}
-
-export const factorialApprox = (n) => {
-    return Math.sqrt(n) * Math.pow((n / Math.E), n) * Math.pow((8 * Math.pow(n, 3) + 4 * Math.pow(n, 2) + n + 1 / 30), 1 / 6);
-}
 
 export const constantValues = new Map([
     ['π', Math.PI],

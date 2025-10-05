@@ -1,7 +1,7 @@
-import { decimalToFraction, factorialApprox, constantValues } from "./logic";
+import { decimalToFraction, gammaApprox, constantValues } from "./logic";
 import { functions, evaluateFunction, functionArguments } from "./functions";
 
-const operators = new Set([
+export const operators = new Set([
     '+','-',"*","/","^", "NEG", '!'
 ])
 
@@ -53,7 +53,6 @@ export const tokenize = (str) => {
         }
     }
     
-    //console.log(rawTokens);
 
     //put together functions
     let filteredTokens1 = [];
@@ -293,9 +292,8 @@ export const shuntingYard = (tokens) => {
  * returns undefined if there are any variables
  * @param {Array} tokens 
  * @param {boolean} fraction true if answer should have fractional coefficients
- * @param {boolean} absorbConstants true if constants should be absorbed into the coefficient
  */
-export const evaluateRPN = (tokens, fraction, absorbConstants) => {
+export const evaluateRPN = (tokens, fraction) => {
     let i = 0;
     while (i < tokens.length) {
         const type = tokens[i].type;
@@ -323,7 +321,11 @@ export const evaluateRPN = (tokens, fraction, absorbConstants) => {
                 if (tokens[i - 1].type != "number") {
                     return new Error(`Not a number!`);
                 }
-                tokens[i - 1].value = factorialApprox(tokens[i - 1].value);
+                const result = gammaApprox(tokens[i - 1].value + 1);
+                if (result == Infinity) {
+                    return `\\text{Negative integer factorial!}`
+                }
+                tokens[i - 1].value = result;
                 tokens.splice(i, 1);
             } else if (val == 'NEG') {
                 if (i < 1) {
@@ -375,11 +377,11 @@ export const evaluateRPN = (tokens, fraction, absorbConstants) => {
                     case '/':
                         tokens[i - 2].value = a / b;
                         break;
-                    case '-':
-                        tokens[i - 2].value = a - b;
-                        break;
                     case '+':
                         tokens[i - 2].value = a + b;
+                        break;
+                    case '-':
+                        tokens[i - 2].value = a - b;
                         break;
                 }
                 i--;
@@ -405,5 +407,148 @@ export const evaluateRPN = (tokens, fraction, absorbConstants) => {
             tokens.splice(i, numArgs);
         }
     }
+
+    if (tokens.length > 1) {
+        return `\\text{Incorrect number of arguments for some function!}`
+    }
+
+
+    let result = `${tokens[0].value}`;
+    if (result == "Infinity" || result == "-Infinity") {
+        return `\\text{Division by zero!}`
+    }
+    if (fraction) {
+        const frac = decimalToFraction(Number(result));
+        if (frac[1] != 1) {
+            result = `\\frac{${frac[0]}}{${frac[1]}}`;
+        } else {
+            result = `${frac[0]}`;
+        }
+    }
+    return result;
+}
+
+export const rpnToLatex = (tokens) => {
+    if (tokens.length == 1 && tokens[0].type == "number" || tokens[0].type == "constant" || tokens[0].type == "variable") {
+        return `${tokens[0].value}`
+    }
+    let i = 0;
+    while (i < tokens.length) {
+        const type = tokens[i].type;
+        const val = tokens[i].value;
+
+        //func is different from function; func is a functional expression like "sin(0)"
+        if (type == "number" || type == "constant" || type == "variable" 
+            || type == "sum/diff" || type == "product" || type == "quotient"
+            || type == "exponent" || type == "factorial" || type == "neg" || type == "func") {
+            i++;
+            continue;
+        }
+
+        if (type == "operator") {
+            if (val == '!') {
+                if (i < 1) {
+                    return new Error(`Not enough operands for operator (${val})!`);
+                }
+
+                const prevToken = tokens[i - 1];
+                if (prevToken.type == "sum/diff" || prevToken.type == "product" || prevToken.type == "quotient"
+                    || prevToken.type == "neg") {
+                    tokens[i - 1].value = `\\left( ${prevToken.value} \\right)!`
+                } else {
+                    tokens[i - 1].value = `${prevToken.value}!`
+                }
+                prevToken.type = "factorial";
+                tokens.splice(i, 1);
+            } else if (val == 'NEG') {
+                if (i < 1) {
+                    return new Error(`Not enough operands for operator (${val})!`);
+                }
+
+                const prevToken = tokens[i - 1];
+                if (prevToken.type == "sum/diff" || prevToken.type == "neg") {
+                    tokens[i - 1].value = `-\\left( ${prevToken.value} \\right)`;
+                } else {
+                    tokens[i - 1].value = `-${prevToken.value}`;
+                }
+                prevToken.type = "neg";
+                tokens.splice(i, 1);
+            } else {
+                if (i < 2) {
+                    return new Error(`Not enough operands for operator (${val})!`);
+                }
+
+                const a = tokens[i - 2]
+                const b = tokens[i - 1];
+
+                if (val == '^') {
+                    if (a.type == "sum/diff" || a.type == "product" || a.type == "quotient" 
+                        || a.type == "factorial" || a.type == "neg") {
+                            tokens[i - 2].value = `\\left(${a.value}\\right)^{${b.value}}`;
+                        } else {
+                            tokens[i - 2].value = `${a.value}^{${b.value}}`;
+                        }
+                    tokens[i - 2].type = "exponent";
+                } else if (val == '*') {
+                    let usingParenthesis = false;
+                    let left = a.value;
+                    let right = b.value;
+
+                    if (a.type == "sum/diff" || a.type == "neg") {
+                        left = `\\left(${a.value}\\right)`;
+                        usingParenthesis = true;
+                    }
+
+                    if (b.type == "sum/diff" || b.type == "neg") {
+                        right = `\\left(${b.value}\\right)`;
+                        usingParenthesis = true;
+                    }
+                    
+                    tokens[i - 2].value = `${left}${usingParenthesis ? `` : `\\cdot`}${right}`;
+                    tokens[i - 2].type = "product";
+                } else if (val == '/') {
+                    tokens[i - 2].value = `\\frac{${a.value}}{${b.value}}`;
+                    tokens[i - 2].type = "quotient";
+                } else if (val == '+' || val == '-') {
+                    let right = b.value;
+                    if (b.type == "neg") {
+                        right = `\\left(${b.value})\\right)`;
+                    }
+                    tokens[i - 2].value = `${a.value}${val}${right}`;
+                    tokens[i - 2].type = "sum/diff";
+                }
+
+                i--;
+                tokens.splice(i, 2);
+            }
+        } else if (type == "function") {
+            const numArgs = functionArguments.get(val);
+            if (i < numArgs) {
+                return new Error(`Expected ${numArgs} arguments for function ${val} but got ${i + 1} instead!`);
+            }
+            const args = tokens.slice(i - numArgs, i);
+            let argVals = "\\left("
+
+            for (let j = 0; j < args.length; j++) {
+                argVals += args[j].value;
+                if (j < args.length - 1) {
+                    argVals += ','
+                }
+            }
+            argVals += "\\right)"
+
+            tokens[i - numArgs] = {
+                type: "func",
+                value: `${val}${tokens[i - numArgs]}`
+            }
+            i -= (numArgs - 1);
+            tokens.splice(i, numArgs);
+        }
+    }
+
+    if (tokens.length > 1) {
+        return null;
+    }
+
     return tokens[0].value;
 }

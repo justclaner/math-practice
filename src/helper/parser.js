@@ -294,6 +294,7 @@ export const shuntingYard = (tokens) => {
  * @param {boolean} fraction true if answer should have fractional coefficients
  */
 export const evaluateRPN = (tokens, fraction) => {
+    console.log(tokens);
     let i = 0;
     while (i < tokens.length) {
         const type = tokens[i].type;
@@ -358,7 +359,7 @@ export const evaluateRPN = (tokens, fraction) => {
 
                 if (tokens[i - 2].type == "constant") {
                     tokens[i - 2].type = "number";
-                    tokens[i - 2].value = constantValues.get(tokens[i - 1].value);
+                    tokens[i - 2].value = constantValues.get(tokens[i - 2].value);
                 }
 
                 if (tokens[i - 2].type != "number") {
@@ -384,8 +385,8 @@ export const evaluateRPN = (tokens, fraction) => {
                         tokens[i - 2].value = a - b;
                         break;
                 }
+                tokens.splice(i - 1, 2);
                 i--;
-                tokens.splice(i, 2);
             }
         } else if (type == "function") {
             const numArgs = functionArguments.get(val);
@@ -517,9 +518,8 @@ export const rpnToLatex = (tokens) => {
                     tokens[i - 2].value = `${a.value}${val}${right}`;
                     tokens[i - 2].type = "sum/diff";
                 }
-
+                tokens.splice(i - 1, 2);
                 i--;
-                tokens.splice(i, 2);
             }
         } else if (type == "function") {
             const numArgs = functionArguments.get(val);

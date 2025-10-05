@@ -512,7 +512,7 @@ export const rpnToLatex = (tokens) => {
                 } else if (val == '+' || val == '-') {
                     let right = b.value;
                     if (b.type == "neg") {
-                        right = `\\left(${b.value})\\right)`;
+                        right = `\\left(${b.value}\\right)`;
                     }
                     tokens[i - 2].value = `${a.value}${val}${right}`;
                     tokens[i - 2].type = "sum/diff";

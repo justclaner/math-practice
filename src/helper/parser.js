@@ -294,7 +294,6 @@ export const shuntingYard = (tokens) => {
  * @param {boolean} fraction true if answer should have fractional coefficients
  */
 export const evaluateRPN = (tokens, fraction) => {
-    console.log(tokens);
     let i = 0;
     while (i < tokens.length) {
         const type = tokens[i].type;

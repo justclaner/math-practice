@@ -144,8 +144,6 @@ const Pemdas = () => {
         setUserInput("");
 
         const problem = generatePEMDASProblem(operations, operationCount, maxAbsAns);
-        console.log(problem[0]);
-        console.log(problem[1]);
         setAnswer(Number(problem[0]));
         setLatex(problem[1]);
 

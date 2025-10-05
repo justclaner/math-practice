@@ -294,6 +294,7 @@ export const shuntingYard = (tokens) => {
  * @param {boolean} fraction true if answer should have fractional coefficients
  */
 export const evaluateRPN = (tokens, fraction) => {
+    console.log(structuredClone(tokens));
     let i = 0;
     while (i < tokens.length) {
         const type = tokens[i].type;
@@ -425,6 +426,7 @@ export const evaluateRPN = (tokens, fraction) => {
             result = `${frac[0]}`;
         }
     }
+    console.log(result);
     return result;
 }
 
@@ -434,6 +436,7 @@ export const rpnToLatex = (tokens) => {
     }
     let i = 0;
     while (i < tokens.length) {
+        console.log(structuredClone(tokens));
         const type = tokens[i].type;
         const val = tokens[i].value;
 
@@ -511,7 +514,7 @@ export const rpnToLatex = (tokens) => {
                     tokens[i - 2].type = "quotient";
                 } else if (val == '+' || val == '-') {
                     let right = b.value;
-                    if (b.type == "neg") {
+                    if (b.type == "neg" || (val == '-' && b.type == "sum/diff")) {
                         right = `\\left(${b.value}\\right)`;
                     }
                     tokens[i - 2].value = `${a.value}${val}${right}`;

@@ -52,6 +52,8 @@ const Test = () => {
             katex.renderToString(res);
             setResult(res);
         } catch (e) {
+            console.log(e.message);
+            setLatex(`\\text{${e.message}}`);
             setResult(null);
         }
     }, [userInput])

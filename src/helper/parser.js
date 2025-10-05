@@ -37,7 +37,7 @@ export const tokenize = (str) => {
     //filter once
     let i = 0;
     for (let j = 0; j < str.length; j++) {
-        if (operators.has(str[j]) || str[j] == 'π' || str[j] == '(' || str[j] == ')' || str[j] == ',' || /[a-zA-Z]/.test(str[j])) {
+        if (operators.has(str[j]) || str[j] == 'π' || str[j] == '(' || str[j] == ')' || str[j] == ',' || /[a-zA-Z\[\]]/.test(str[j])) {
             if (i < j) {
                 rawTokens.push(Number(str.slice(i, j)));
             }
@@ -64,6 +64,22 @@ export const tokenize = (str) => {
     for (let j = 0; j < rawTokens.length; j++) {
         //if current token is an alphabet symbol, enter checkingIsFunction mode
         if (/[a-zA-Z]/.test(rawTokens[j])) {
+            if (rawTokens.slice(j).join("").startsWith("sqrt[")) {
+                if (rawTokens.length - j < 10) {
+                    return new Error("Incomplete brackets, error!");
+                }
+
+                let closingBracket = j + 6;
+                while (closingBracket < rawTokens.length && rawTokens[closingBracket] != "]") {
+                    closingBracket++;
+                }
+                
+                filteredTokens1.push(`sqrt[${rawTokens.slice(j + 5, closingBracket).join("")}]`);
+                startIndex = -1;
+                endIndex = -1;
+                j += 6;
+                continue;
+            }
             //set startIndex if currently entering the checkIsFunction mode, otherwise no
             if (!checkingIsFunction) {
 
@@ -132,15 +148,14 @@ export const tokenize = (str) => {
             }
         }
     }
-
     //change each token in filteredTokens1 to be an object giving the information on what type of token it is
     //each filteredTokens1 element will be of an json object in the form {type: [type], value: [value]}
     for (let j = 0; j < filteredTokens1.length; j++) {
         let tok = filteredTokens1[j];
         let type = "";
         let newObj = {
-            "type": "",
-            "value": tok
+            type: "",
+            value: tok
         }
         //number is any decimal, a constant is a greek symbol or e
         if (typeof tok == "number") {
@@ -149,6 +164,14 @@ export const tokenize = (str) => {
             type = "constant";
         } else if (operators.has(tok)) {
             type = "operator";
+        } else if (tok.startsWith("sqrt[")) {
+            type = "function";
+            newObj.value = "sqrt";
+            const rootIdx = Number(tok.slice(5, tok.length - 1));
+            if (isNaN(rootIdx)) {
+                throw new Error("Complex root indices not supported!");
+            }
+            newObj.rootIndex = rootIdx;
         } else if (functions.has(tok)) {
             type = "function";
         } else if (tok == '(' || tok == ')') {
@@ -160,11 +183,9 @@ export const tokenize = (str) => {
         } else {
             type = "unknown";
         }
-
         newObj.type = type;
         filteredTokens1[j] = newObj;
     }
-
     //filter second time to add unary operation negative sign
     let filteredTokens2 = [];
 
@@ -257,7 +278,7 @@ export const shuntingYard = (tokens) => {
                 operators.push(token);
             } else if (value == ')') {
                 if (operators.length == 0) {
-                    return new Error("Mismatched parentheses!");
+                    throw new Error("Mismatched parentheses!");
                 }
 
                 while (operators[operators.length - 1].value != '(') {
@@ -266,7 +287,7 @@ export const shuntingYard = (tokens) => {
 
                 //there should be a left-parenthesis at the top of the stack now
                 if (operators.length == 0 || operators[operators.length - 1].value != '(') {
-                    return new Error("Mismatched parentheses!");
+                    throw new Error("Mismatched parentheses!");
                 }
 
                 operators.pop();
@@ -279,7 +300,7 @@ export const shuntingYard = (tokens) => {
 
     while (operators.length > 0) {
         if (operators[operators.length - 1].value == '(') {
-            return new Error("Mismatched parentheses!");
+            throw new Error("Mismatched parentheses!");
         }
         output.push(operators.pop());
     }
@@ -392,21 +413,30 @@ export const evaluateRPN = (tokens, fraction) => {
                 return new Error(`Expected ${numArgs} arguments for function ${val} but got ${i + 1} instead!`);
             }
             const args = tokens.slice(i - numArgs, i);
-            let argVals = [];
+            let argVals = args.map(a => a.value);
 
-            for (let j = 0; j < args.length; j++) {
-                argVals.push(args[j].value);
-            }
-
-            tokens[i - numArgs] = {
-                type: "number",
-                value: evaluateFunction(val, argVals)
+            //special sqrt
+            if (val == "sqrt" && tokens[i].rootIndex) {
+                if (isNaN(Number(tokens[i].rootIndex))) {
+                    return `\\text{Complex root indices are not supported!}`
+                }
+                if (tokens[i].rootIndex == 0) {
+                    return `\\text{Zero-th root!}`
+                }
+                tokens[i - numArgs] = {
+                    type: "number",
+                    value: Math.pow(argVals[0], 1 / tokens[i].rootIndex)
+                }
+            } else {
+                tokens[i - numArgs] = {
+                    type: "number",
+                    value: evaluateFunction(val, argVals)
+                }
             }
             i -= (numArgs - 1);
             tokens.splice(i, numArgs);
         }
     }
-
     if (tokens.length > 1) {
         return `\\text{Incorrect number of arguments for some function!}`
     }
@@ -551,7 +581,11 @@ export const rpnToLatex = (tokens) => {
             argVals += "\\right)"
             tokens[i - numArgs].type = "func";
             if (val == "sqrt") {
-                tokens[i - numArgs].value = `\\${val}{${tokens[i - numArgs].value}}`;
+                if (tokens[i].rootIndex) {
+                    tokens[i - numArgs].value = `\\sqrt[${tokens[i].rootIndex}]{${tokens[i - numArgs].value}}`;
+                } else {
+                    tokens[i - numArgs].value = `\\sqrt{${tokens[i - numArgs].value}}`;
+                }
             } else if (val == "cbrt") {
                 tokens[i - numArgs].value = `\\sqrt[3]{${tokens[i - numArgs].value}}`;
             } else {

@@ -73,7 +73,8 @@ export const generatePEMDASProblem = (operations, operationCount, maxAbsAns) => 
     }
 
     const answer = evaluateRPN(structuredClone(tokens));
-    if (answer.startsWith("\\text{") || !Number.isInteger(Number(answer)) || Math.abs(Number(answer)) > maxAbsAns) {
+    if (answer.startsWith("\\text{") || !Number.isInteger(Number(answer)) 
+        || Math.abs(Number(answer)) > maxAbsAns || Math.abs(Number(answer)) == 0 || Math.abs(Number(answer)) == 1) {
         return generatePEMDASProblem(operations, operationCount, maxAbsAns);
     }
     

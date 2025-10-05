@@ -213,7 +213,6 @@ export const tokenize = (str) => {
 
         filteredTokens3.push(tok);
     }
-
     return filteredTokens3;
 }
 
@@ -429,7 +428,7 @@ export const evaluateRPN = (tokens, fraction) => {
 }
 
 export const rpnToLatex = (tokens) => {
-    if (tokens.length == 1 && tokens[0].type == "number" || tokens[0].type == "constant" || tokens[0].type == "variable") {
+    if (tokens.length == 1 && (tokens[0].type == "number" || tokens[0].type == "constant" || tokens[0].type == "variable")) {
         return `${tokens[0].value}`
     }
     let i = 0;
@@ -498,23 +497,25 @@ export const rpnToLatex = (tokens) => {
                     let left = a.value;
                     let right = b.value;
 
-                    if (a.type != "algebraic" && (a.type == "sum/diff" || a.type == "neg")) {
+                    if (a.type != "algebraic" && a.type != "variable" && (a.type == "sum/diff" || a.type == "neg")) {
                         left = `\\left(${a.value}\\right)`;
                         usingParenthesis = true;
                     }
 
-                    if (b.type != "algebraic" && (b.type == "sum/diff" || b.type == "neg")) {
+                    if (b.type != "algebraic" && b.type != "variable" && (b.type == "sum/diff" || b.type == "neg")) {
                         right = `\\left(${b.value}\\right)`;
                         usingParenthesis = true;
                     }
-                    
-                    if (b.type == "algebraic") {
+
+                    const leftNoMult = new Set(["number", "product", "variable", "algebraic"]);
+                    const rightNoMult = new Set(["variable", "algebraic"]);
+                    if (leftNoMult.has(a.type) && rightNoMult.has(b.type)) {
                         tokens[i - 2].value = `${left}${right}`
                     } else {
                         tokens[i - 2].value = `${left}${usingParenthesis ? `` : `\\cdot `}${right}`;
                     }
 
-                    if (a.type == "algebraic" && b.type == "algebraic") {
+                    if ((a.type == "algebraic" && b.type == "algebraic") || (a.type == "variable" && b.type == "variable")) {
                         tokens[i - 2].type = "algebraic";
                     } else {
                         tokens[i - 2].type = "product";
@@ -548,11 +549,15 @@ export const rpnToLatex = (tokens) => {
                 }
             }
             argVals += "\\right)"
-
-            tokens[i - numArgs] = {
-                type: "func",
-                value: `${val}${tokens[i - numArgs]}`
+            tokens[i - numArgs].type = "func";
+            if (val == "sqrt") {
+                tokens[i - numArgs].value = `\\${val}{${tokens[i - numArgs].value}}`;
+            } else if (val == "cbrt") {
+                tokens[i - numArgs].value = `\\sqrt[3]{${tokens[i - numArgs].value}}`;
+            } else {
+                tokens[i - numArgs].value = `\\${val}\\left(${tokens[i - numArgs].value}\\right)`;
             }
+
             i -= (numArgs - 1);
             tokens.splice(i, numArgs);
         }

@@ -37,6 +37,7 @@ const Test = () => {
 
     useEffect(() => {
         if (userInput == "") {
+            setLatex("");
             setResult(null);
             return;
         }

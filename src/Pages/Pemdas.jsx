@@ -154,8 +154,8 @@ const Pemdas = () => {
         setTotalQuestions(totalQuestions + 1);
 
         try {
-            const userAnswer = evaluateUserInput(userInput);
-            if (userAnswer.startsWith("\\text{") || Number(userAnswer).toFixed(2) != answer.toFixed(2)) {
+            const userAnswer = Number(userInput);
+            if (isNaN(userAnswer) || Number(userAnswer).toFixed(2) != answer.toFixed(2)) {
                 if (incorrectRef.current) {
                     incorrectRef.current.currentTime = 0;
                     incorrectRef.current.play();
